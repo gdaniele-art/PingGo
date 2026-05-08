@@ -29,7 +29,7 @@ public class User {
     private Instant createdAt;
 
     @Column(nullable = false)
-    private boolean enabled;
+    private boolean enabled = true;
 
 
     @Column(nullable = false)
@@ -65,7 +65,7 @@ public class User {
     public void setCreatedAt(Instant createdAt){
         this.createdAt = createdAt;
     }
-    public boolean getEnabled(){
+    public boolean isEnabled(){
         return this.enabled;
     }
     public void setEnabled(boolean enabled){
@@ -78,13 +78,11 @@ public class User {
         this.password = password;
     }
 
-    public User(Long id,Role role,String email,Instant createdAt
+    public User(Role role,String email
         ,boolean enabled, String password
     ){
-        this.id = id;
         this.role = role;
         this.email = email;
-        this.createdAt = createdAt;
         this.enabled = enabled;
         this.password = password;
     }
@@ -95,11 +93,10 @@ public class User {
     @PrePersist
     public void prePersist(){
         if(this.createdAt == null){
-            this.createdAt = Instant.now();
+        this.createdAt = Instant.now();
         }
         if(this.role == null){
             this.role = Role.VIEWER;
         }
-        this.enabled = true;
     }
 }
