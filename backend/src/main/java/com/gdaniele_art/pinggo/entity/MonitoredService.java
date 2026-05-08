@@ -1,15 +1,20 @@
 package com.gdaniele_art.pinggo.entity;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,8 +24,8 @@ public class MonitoredService {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String serviceKey;
+    @Column(nullable = false, unique = true, name= "service_key") // i need to change  it later
+    private String serviceKey; // this is a logic identifier
 
     @Column(nullable = false)
     private String name;
@@ -29,7 +34,7 @@ public class MonitoredService {
     private String url;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name ="check_method")
     private Method checkMethod;
 
     public enum Method{
@@ -40,9 +45,13 @@ public class MonitoredService {
     @Column(nullable = false)
     private boolean enabled = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY) 
     @JoinColumn(name ="agent_id",nullable = false) // agent_id is the FK that appears in the db
     private Agent agent;
+
+    @OneToMany(mappedBy = "monitoredService")
+    private List<CheckLog> checkLogs = new ArrayList<>();
+
 
     public Long getId(){
         return this.id ;
@@ -86,7 +95,12 @@ public class MonitoredService {
     public void setAgent(Agent agent){
         this.agent = agent;
     }
-
+    public List<CheckLog> getCheckLogs(){
+        return this.checkLogs;
+    }
+    public void setCheckLogs(List<CheckLog> checkLogs){
+        this.checkLogs = checkLogs;
+    }
     public MonitoredService(){
     }
     public MonitoredService(String name, String url, String serviceKey,
