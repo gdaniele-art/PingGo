@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Builder;
 
 @Entity
 @Table(name="monitored_services")
@@ -103,6 +104,8 @@ public class MonitoredService {
     }
     public MonitoredService(){
     }
+
+    @Builder
     public MonitoredService(String name, String url, String serviceKey,
         Method checkMethod, Agent agent
     ){

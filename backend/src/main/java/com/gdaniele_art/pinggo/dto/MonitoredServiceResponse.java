@@ -2,6 +2,8 @@ package com.gdaniele_art.pinggo.dto;
 
 import com.gdaniele_art.pinggo.entity.MonitoredService.Method;
 
+import lombok.Builder;
+
 public class MonitoredServiceResponse {
     private Long id;
     private String serviceKey;
@@ -65,7 +67,7 @@ public class MonitoredServiceResponse {
     public MonitoredServiceResponse() {
     }
 
-    
+    @Builder
     public MonitoredServiceResponse(
             Long id, String serviceKey,String name,
             String url,Method checkMethod,boolean enabled, Long agentId,  String agentName
