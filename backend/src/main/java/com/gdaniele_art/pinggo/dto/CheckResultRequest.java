@@ -56,7 +56,8 @@ public class CheckResultRequest {
         this.errorMessage = errorMessage;
     }
 
-    public CheckResultRequest(Long agentId, Instant checkedAt, Long latencyMs, Method status, Integer httpStatusCode, String serviceKey, String errorMessage) {
+    public CheckResultRequest(Long agentId, Instant checkedAt, Long latencyMs, Method status, 
+        Integer httpStatusCode, String serviceKey, String errorMessage) {
         this.agentId = agentId;
         this.checkedAt = checkedAt;
         this.latencyMs = latencyMs;

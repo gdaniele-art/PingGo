@@ -3,6 +3,8 @@ package com.gdaniele_art.pinggo.dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Builder;
+
 public class AgentResponse {
     private Long id;
     private String name;
@@ -50,6 +52,7 @@ public class AgentResponse {
     
     public AgentResponse(){}
 
+    @Builder
     public AgentResponse(Long id, String name, String description, boolean enabled, int servicesCount){
         this.id = id;
         this.name = name;

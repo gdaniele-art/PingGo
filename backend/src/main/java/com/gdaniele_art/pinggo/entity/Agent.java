@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,12 @@ public class Agent {
     public void setDescription(String description){
         this.description = description;
     }
+    public boolean isEnabled(){
+        return this.enabled;
+    }
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
+    }
     public List<MonitoredService> getMonitoredServices(){
         return this.monitoredServices;
     }
@@ -55,6 +62,8 @@ public class Agent {
     public Agent(){
 
     }
+    
+    @Builder
     public Agent(String name,String description){
         this.name = name;
         this.description = description;
