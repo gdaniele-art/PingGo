@@ -2,15 +2,16 @@ package com.gdaniele_art.pinggo.dto;
 
 import java.time.Instant;
 
+import com.gdaniele_art.pinggo.entity.CheckLog.StatusService;
 
-import com.gdaniele_art.pinggo.entity.MonitoredService.Method;
+import lombok.Builder;
 
 public class CheckLogResponse {
     private Long id;
     private Long monitoredServiceId;
     private String serviceKey;
     private String serviceName;
-    private Method status;
+    private StatusService status;
     private Integer httpStatusCode;
     private Long latencyMs;
     private String errorMessage;
@@ -35,10 +36,10 @@ public class CheckLogResponse {
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
-    public Method getStatus() {
+    public StatusService getStatus() {
         return status;
     }
-    public void setStatus(Method status) {
+    public void setStatus(StatusService status) {
         this.status = status;
     }
     public Long getId() {
@@ -79,8 +80,9 @@ public class CheckLogResponse {
         this.latencyMs = latencyMs;
     }
 
+    @Builder
     public CheckLogResponse(Long id, Instant receivedAt, Instant checkedAt, String errorMessage,
-                            Long latencyMs, Integer httpStatusCode, Method status, String serviceName, String serviceKey, Long monitoredServiceId) {
+                            Long latencyMs, Integer httpStatusCode, StatusService status, String serviceName, String serviceKey, Long monitoredServiceId) {
         this.id = id;
         this.receivedAt = receivedAt;
         this.checkedAt = checkedAt;

@@ -2,12 +2,12 @@ package com.gdaniele_art.pinggo.dto;
 
 import java.time.Instant;
 
-import com.gdaniele_art.pinggo.entity.MonitoredService.Method;
+import com.gdaniele_art.pinggo.entity.CheckLog.StatusService;
 
 public class CheckResultRequest {
     private Long agentId;
     private String serviceKey;
-    private Method status;
+    private StatusService status;
     private Integer httpStatusCode;
     private Long latencyMs;
     private String errorMessage;
@@ -31,10 +31,10 @@ public class CheckResultRequest {
     public void setServiceKey(String serviceKey) {
         this.serviceKey = serviceKey;
     }
-    public Method getStatus() {
+    public StatusService getStatus() {
         return status;
     }
-    public void setStatus(Method status) {
+    public void setStatus(StatusService status) {
         this.status = status;
     }
     public Integer getHttpStatusCode() {
@@ -56,7 +56,7 @@ public class CheckResultRequest {
         this.errorMessage = errorMessage;
     }
 
-    public CheckResultRequest(Long agentId, Instant checkedAt, Long latencyMs, Method status, 
+    public CheckResultRequest(Long agentId, Instant checkedAt, Long latencyMs, StatusService status, 
         Integer httpStatusCode, String serviceKey, String errorMessage) {
         this.agentId = agentId;
         this.checkedAt = checkedAt;

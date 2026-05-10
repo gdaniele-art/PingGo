@@ -15,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import lombok.Builder;
 
 
 @Entity
@@ -107,6 +108,8 @@ public class CheckLog {
     public CheckLog(){
 
     }
+
+    @Builder
     public CheckLog(MonitoredService monitoredService,StatusService status,Integer httpStatusCode, 
         Long latencyMs, String errorMessage, Instant checkedAt){
             this.monitoredService = monitoredService;
