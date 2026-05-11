@@ -43,10 +43,10 @@ public class AgentResponse {
     public void setServicesCount(int servicesCount){
         this.servicesCount = servicesCount;
     }
-    public List<MonitoredServiceResponse> getMonitoredServiceResponse(){
+    public List<MonitoredServiceResponse> getServices(){
         return this.services;
     }
-    public void setMonitoredServiceResponse(List<MonitoredServiceResponse> services){
+    public void setServices(List<MonitoredServiceResponse> services){
         this.services = services;
     }
     

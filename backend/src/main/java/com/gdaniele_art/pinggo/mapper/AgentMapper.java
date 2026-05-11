@@ -60,7 +60,7 @@ public class AgentMapper {
                     .servicesCount(services.size())
                     .build();
 
-        response.setMonitoredServiceResponse(services);
+        response.setServices(services);
 
         return response;
     }

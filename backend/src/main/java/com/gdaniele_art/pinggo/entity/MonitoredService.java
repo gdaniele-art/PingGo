@@ -16,16 +16,24 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Builder;
 
 @Entity
-@Table(name="monitored_services")
+@Table(name="monitored_services",
+        uniqueConstraints = {
+            @UniqueConstraint(
+                name= "uk_agent_service_key",
+                columnNames= {"agent_id", "service_key"}
+            )
+        }
+)
 public class MonitoredService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, name= "service_key") // i need to change  it later
+    @Column(nullable = false, name= "service_key") 
     private String serviceKey; // this is a logic identifier
 
     @Column(nullable = false)

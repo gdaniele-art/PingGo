@@ -122,6 +122,13 @@ public class CheckLog {
 
     @PrePersist
     public void prePersist(){
-        if(this.receivedAt == null) receivedAt = Instant.now();
+        Instant now = Instant.now();
+
+        if(this.receivedAt == null){
+            this.receivedAt = now;
+        }
+        if(this.checkedAt == null){
+            this.checkedAt = now;
+        }
     }
 }
