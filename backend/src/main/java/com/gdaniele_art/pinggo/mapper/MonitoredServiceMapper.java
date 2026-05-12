@@ -10,7 +10,8 @@ import com.gdaniele_art.pinggo.entity.MonitoredService;
 @Component
 public class MonitoredServiceMapper {
     public MonitoredService toEntity(CreateMonitoredServiceRequest montiroredServiceRequest, Agent agent){
-        if(montiroredServiceRequest == null) return null;
+        if(montiroredServiceRequest == null) throw new RuntimeException("Invalid request");
+
         return MonitoredService.builder()
                 .name(montiroredServiceRequest.getName())
                 .url(montiroredServiceRequest.getUrl())
@@ -21,7 +22,8 @@ public class MonitoredServiceMapper {
     }
 
     public MonitoredServiceResponse toResponse(MonitoredService monitoredService){
-        if(monitoredService == null) return null;
+        if(monitoredService == null) throw new RuntimeException("Invalid monitoredService");
+
         return MonitoredServiceResponse.builder()
                 .id(monitoredService.getId())
                 .serviceKey(monitoredService.getServiceKey())
