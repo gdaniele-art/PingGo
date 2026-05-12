@@ -8,7 +8,10 @@ import com.gdaniele_art.pinggo.entity.MonitoredService;
 
 public interface MonitoredServiceRepository extends JpaRepository<MonitoredService, Long> {
     
-        boolean existsByServiceKey(String serviceKey);
+    boolean existsByServiceKey(String serviceKey);
 
     Optional<MonitoredService> findByServiceKey(String serviceKey);
+
+    Optional<MonitoredService> findByServiceKeyAndAgentId(String serviceKey, Long agentId);
+    
 }

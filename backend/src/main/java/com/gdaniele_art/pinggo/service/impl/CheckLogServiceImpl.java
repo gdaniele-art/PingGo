@@ -1,0 +1,87 @@
+package com.gdaniele_art.pinggo.service.impl;
+
+import com.gdaniele_art.pinggo.dto.CheckLogResponse;
+import com.gdaniele_art.pinggo.dto.CheckResultRequest;
+import com.gdaniele_art.pinggo.entity.CheckLog;
+import com.gdaniele_art.pinggo.entity.MonitoredService;
+import com.gdaniele_art.pinggo.mapper.CheckLogMapper;
+import com.gdaniele_art.pinggo.repository.AgentRepository;
+import com.gdaniele_art.pinggo.repository.CheckLogRepository;
+import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
+import com.gdaniele_art.pinggo.service.CheckLogService;
+
+import org.aspectj.weaver.loadtime.Agent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CheckLogServiceImpl implements CheckLogService{
+    @Autowired
+    private CheckLogRepository checkLogRepository;
+
+    @Autowired
+    private CheckLogMapper checkLogMapper;
+
+    @Autowired
+    private MonitoredServiceRepository monitoredServiceRepository;
+
+    @Autowired
+    private AgentRepository agentRepository;
+
+    @Override
+    public CheckLogResponse registerCheckResult(CheckResultRequest request){
+        if(request == null) throw new IllegalArgumentException("Request cannot be null");
+        Long agentId = request.getAgentId();
+        if(agentId == null) throw new IllegalArgumentException("AgentId cannot be null");
+
+        String serviceKey = request.getServiceKey();
+        if(serviceKey == null || serviceKey.isBlank()) throw new IllegalArgumentException("ServiceKey cannot be null");
+        
+        MonitoredService monitoredService = monitoredServiceRepository.findByServiceKeyAndAgentId(serviceKey, agentId)
+            .orElseThrow(() -> new IllegalArgumentException("Monitored service not found"));
+        
+        CheckLog checkLog = checkLogMapper.toEntity(request, monitoredService);
+        checkLog = checkLogRepository.save(checkLog);
+        
+        return checkLogMapper.toResponse(checkLog);
+    }
+
+    @Override
+    public CheckLogResponse getLastLogByServiceKey(String serviceKey) {
+        if(serviceKey == null || serviceKey.isBlank()) 
+        throw new IllegalArgumentException("ServiceKey cannot be null");
+
+        CheckLog checkLog = checkLogRepository.findTopByMonitoredService_ServiceKeyOrderByCheckedAtDesc(serviceKey)
+            .orElseThrow(() -> new IllegalArgumentException("Check log not found"));
+        
+        return checkLogMapper.toResponse(checkLog);
+    }
+
+    @Override
+    public CheckLogResponse getLastLogByMonitoredServiceId(Long monitoredServiceId) {
+        if(monitoredServiceId == null) throw new IllegalArgumentException("MonitoredServiceId cannot be null");
+
+        CheckLog checkLog = checkLogRepository.findTopByMonitoredService_IdOrderByCheckedAtDesc(monitoredServiceId)
+            .orElseThrow(() -> new IllegalArgumentException("Check log not found"));
+        
+        return checkLogMapper.toResponse(checkLog);
+    }
+
+    @Override
+    public List<CheckLogResponse> getRecentLogsByServiceKey(String serviceKey) {
+        if(serviceKey == null || serviceKey.isBlank()) 
+            throw new IllegalArgumentException("ServiceKey cannot be null");
+        List<CheckLog> checkLogs = checkLogRepository.findTop50ByMonitoredService_ServiceKeyOrderByCheckedAtDesc(serviceKey);
+        return checkLogMapper.toResponseList(checkLogs);
+    }
+
+    @Override
+    public List<CheckLogResponse> getRecentLogsByMonitoredServiceId(Long monitoredServiceId) {
+        if(monitoredServiceId == null) throw new IllegalArgumentException("MonitoredServiceId cannot be null");
+        List<CheckLog> checkLogs = checkLogRepository.findTop50ByMonitoredService_IdOrderByCheckedAtDesc(monitoredServiceId);
+        return checkLogMapper.toResponseList(checkLogs);
+    }
+
+}
