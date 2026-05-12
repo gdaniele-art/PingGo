@@ -21,8 +21,11 @@ public class AgentService {
     private AgentMapper agentMapper;
 
     public AgentResponse createAgent(CreateAgentRequest request){
+        if(request == null) throw new RuntimeException("agent does not exist");
+
         Agent agent = agentMapper.toEntity(request);
 
+        if(agent == null) throw new RuntimeException("Agent invalid");
         Agent savedAgent = agentRepository.save(agent);
 
         return agentMapper.toResponse(savedAgent);

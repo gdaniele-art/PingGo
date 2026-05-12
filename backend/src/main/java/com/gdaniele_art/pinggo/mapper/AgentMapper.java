@@ -18,7 +18,7 @@ public class AgentMapper {
     private MonitoredServiceMapper monitoredServiceMapper;
 
     public Agent toEntity(CreateAgentRequest agentRequest){
-        if (agentRequest == null) return null;
+        if (agentRequest == null) throw new RuntimeException("Invalid agent request");
 
         return Agent.builder()
                 .name(agentRequest.getName())
@@ -27,7 +27,7 @@ public class AgentMapper {
     }
 
     public AgentResponse toResponse(Agent agent){
-        if (agent == null) return null;
+        if (agent == null) throw new RuntimeException("Invalid agent");
 
         int servicesCount = agent.getMonitoredServices() == null ? 0: agent.getMonitoredServices().size();
 
@@ -43,7 +43,7 @@ public class AgentMapper {
     public  AgentResponse toResponseWithService(Agent agent){
         if(agent == null) return null;
 
-        List<MonitoredServiceResponse> services = new ArrayList();
+        List<MonitoredServiceResponse> services = new ArrayList<>();
 
         if(agent.getMonitoredServices() != null){
             services = agent.getMonitoredServices()
