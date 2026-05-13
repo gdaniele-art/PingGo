@@ -33,7 +33,7 @@ public class AgentController {
 
         if (createdAgent.getId() == null) throw new IllegalStateException("Created agent id cannot be null");
 
-        URI location = URI.create("/api/agents" + createdAgent.getId());
+        URI location = URI.create("/api/agents/" + createdAgent.getId());
 
 
         return ResponseEntity.created(location).body(createdAgent);

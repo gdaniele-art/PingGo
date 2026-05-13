@@ -31,7 +31,7 @@ public class MonitoredServiceController {
     public ResponseEntity<MonitoredServiceResponse> createMonitoredService(@Valid @RequestBody CreateMonitoredServiceRequest request){
         MonitoredServiceResponse createdMonitoredServiceResponse = monitoredServiceService.createMonitoredService(request);
 
-        URI location = URI.create("api/services"+ createdMonitoredServiceResponse.getId() );
+        URI location = URI.create("/api/services/"+ createdMonitoredServiceResponse.getId() );
 
         return ResponseEntity.created(location).body(createdMonitoredServiceResponse);
     }
