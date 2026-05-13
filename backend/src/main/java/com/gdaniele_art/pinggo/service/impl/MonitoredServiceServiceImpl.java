@@ -63,6 +63,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
     @Override
     public MonitoredServiceResponse getMonitoredServiceById(Long id) {
+        if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
                                             .orElseThrow(()-> new RuntimeException("Monitored service not found"));
         MonitoredServiceResponse response = monitoredServiceMapper.toResponse(monitoredService);
@@ -79,6 +80,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
     @Override
     public MonitoredServiceResponse enableMonitoredService(Long id) {
+        if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
                                             .orElseThrow(()-> new RuntimeException("Monitored service not found"));
         monitoredService.setEnabled(true);
@@ -89,6 +91,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
     @Override
     public MonitoredServiceResponse disableMonitoredService(Long id) {
+        if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
                                             .orElseThrow(()-> new RuntimeException("Monitored service not found"));
         monitoredService.setEnabled(false);
@@ -99,6 +102,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
     @Override
     public void deleteMonitoredService(Long id) {
+        if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
                                             .orElseThrow(()-> new RuntimeException("Monitored service not found"));
         if (monitoredService.getCheckLogs() != null && !monitoredService.getCheckLogs().isEmpty()) 

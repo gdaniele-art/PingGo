@@ -5,12 +5,10 @@ import com.gdaniele_art.pinggo.dto.CheckResultRequest;
 import com.gdaniele_art.pinggo.entity.CheckLog;
 import com.gdaniele_art.pinggo.entity.MonitoredService;
 import com.gdaniele_art.pinggo.mapper.CheckLogMapper;
-import com.gdaniele_art.pinggo.repository.AgentRepository;
 import com.gdaniele_art.pinggo.repository.CheckLogRepository;
 import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
 import com.gdaniele_art.pinggo.service.CheckLogService;
 
-import org.aspectj.weaver.loadtime.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,9 +25,6 @@ public class CheckLogServiceImpl implements CheckLogService{
     @Autowired
     private MonitoredServiceRepository monitoredServiceRepository;
 
-    @Autowired
-    private AgentRepository agentRepository;
-
     @Override
     public CheckLogResponse registerCheckResult(CheckResultRequest request){
         if(request == null) throw new IllegalArgumentException("Request cannot be null");
@@ -43,6 +38,9 @@ public class CheckLogServiceImpl implements CheckLogService{
             .orElseThrow(() -> new IllegalArgumentException("Monitored service not found"));
         
         CheckLog checkLog = checkLogMapper.toEntity(request, monitoredService);
+
+        if (checkLog == null) throw new IllegalArgumentException("Checklog cannot be null");
+
         checkLog = checkLogRepository.save(checkLog);
         
         return checkLogMapper.toResponse(checkLog);
