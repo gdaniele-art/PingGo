@@ -37,3 +37,6 @@ config/configuration.yml
 
 # H2 local database files
 data/
+
+#personal config
+agent/config.yaml
