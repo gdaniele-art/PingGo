@@ -48,6 +48,7 @@ public class MonitoredService {
 
     public enum Method{
         HTTP_GET,
+        TCP,
         PING
     }
     

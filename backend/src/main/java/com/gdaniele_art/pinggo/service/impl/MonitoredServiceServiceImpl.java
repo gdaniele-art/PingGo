@@ -29,7 +29,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     @Override
     public MonitoredServiceResponse createMonitoredService(CreateMonitoredServiceRequest request){
         if(request == null) throw new RuntimeException("Invalid request");
-
+        if (request.getCheckMethod() == null)  throw new RuntimeException("Method cannot be null");
         String requestKey= request.getServiceKey();
 
         if(requestKey == null || requestKey.isBlank()) throw new RuntimeException("ServiceKey is required");
