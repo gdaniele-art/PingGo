@@ -1,26 +1,36 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
-	"fmt"
+	"time"
 
+	"fmt"
+	"github.com/gdaniele-art/pinggo/agent/internal/config"
+	"github.com/gdaniele-art/pinggo/agent/internal/runner"
 	"github.com/spf13/cobra"
 )
 
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Start the pingGo monitoring agent",
+	Long:  ``,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		cfg, err := config.LoadConfig("config/config.yaml")
+		if err != nil {
+			return fmt.Errorf("failed to load config: %w", err)
+		}
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("run called")
+		configValidated := config.ValidateConfig(cfg)
+		if configValidated != nil {
+			return fmt.Errorf("failed to validate config: %w", configValidated)
+		}
+		intervalSeconds := time.Duration(cfg.IntervalSeconds) * time.Second
+		timeoutSeconds := time.Duration(cfg.TimeoutSeconds) * time.Second
+
+		runner.RunLoop(cfg.APIUrl, cfg.AgentID, cfg.Services, intervalSeconds, timeoutSeconds)
+
+		return nil
+
 	},
 }
 

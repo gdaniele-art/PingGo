@@ -21,7 +21,7 @@ func LoadConfig(path string) (model.Config, error) {
 	return cfg, nil
 }
 
-func validateConfig(cfg model.Config) error {
+func ValidateConfig(cfg model.Config) error {
 	if cfg.APIUrl == "" {
 		return fmt.Errorf("apiUrl is required")
 	}
