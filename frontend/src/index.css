@@ -1,0 +1,248 @@
+body {
+    margin: 0;
+    background-color: #070b18;
+}
+
+.dashboard-page {
+    min-height: 100vh;
+    background-color: #070b18;
+    color: #f8fbff;
+    font-family: Arial, sans-serif;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.dashboard-title {
+    color: #f8fbff;
+    text-align: center;
+}
+
+.dashboard-description {
+    color: #9fb3c8;
+    text-align: center;
+}
+
+#metrics-summary {
+    text-align: left;
+    padding-left: 20px;
+}
+
+#metrics-summary h2 {
+    color: #f8fbff;
+}
+
+#metrics-summary .metric-grid {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 0 30px 0 20px;
+    background-color: #0d1b33;
+    width: fit-content;
+    border-radius: 12px;
+    border: 1px solid #1f4f82;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.08);
+}
+
+#metrics-summary .metric {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 30px 16px 0;
+    border-right: 1px solid #1f4f82;
+}
+
+#metrics-summary .metric:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+#metrics-summary .metric-name {
+    font-weight: 700;
+    color: #9fb3c8;
+    text-transform: uppercase;
+    margin: 0 0 8px 0;
+    text-align: center;
+    font-size: 13px;
+}
+
+#metrics-summary .metric-value {
+    color: #f8fbff;
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.agent-table-title {
+    color: #f8fbff;
+    text-align: left;
+    padding-left: 20px;
+}
+
+.tables-container {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.tables-container .AgentTable {
+    flex: 0 0 35%;
+    background-color: #0d1b33;
+    border: 1px solid #1f4f82;
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.08);
+}
+
+.tables-container .ServicesTable {
+    flex: 0 0 65%;
+    background-color: #0d1b33;
+    border: 1px solid #1f4f82;
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.08);
+}
+
+.tables-container h2,
+.tables-container h1 {
+    color: #f8fbff;
+}
+
+.tables-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tables-container th {
+    color: #f8fbff;
+    font-weight: 700;
+    padding: 12px 8px;
+    text-align: left;
+}
+
+.tables-container td {
+    color: #dbeafe;
+    padding: 12px 8px;
+    text-align: left;
+}
+
+.tables-container tbody tr {
+    border-top: 1px solid rgba(31, 79, 130, 0.45);
+}
+
+.tables-container tbody tr:hover {
+    background-color: rgba(125, 211, 252, 0.06);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 999px;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 70px;
+    background-color: var(--badge-bg, rgba(252, 165, 165, 0.12));
+    color: var(--badge-text, #fca5a5);
+    border: 1px solid var(--badge-border, rgba(252, 165, 165, 0.35));
+}
+
+.status-badge-ok {
+    --badge-bg: rgba(134, 239, 172, 0.12);
+    --badge-text: #86efac;
+    --badge-border: rgba(134, 239, 172, 0.35);
+}
+
+.status-badge-error {
+    --badge-bg: rgba(252, 165, 165, 0.12);
+    --badge-text: #fca5a5;
+    --badge-border: rgba(252, 165, 165, 0.35);
+}
+
+.ServicesTable .status-badge-ok {
+    --badge-bg: rgba(34, 211, 238, 0.12);
+    --badge-text: #7dd3fc;
+    --badge-border: rgba(125, 211, 252, 0.4);
+}
+
+.AgentTable .status-badge-error {
+    --badge-bg: rgba(252, 165, 165, 0.1);
+    --badge-text: #fca5a5;
+    --badge-border: rgba(252, 165, 165, 0.3);
+}
+.RecentLogs {
+    background-color: #0d1b33;
+    border: 1px solid #1f4f82;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px;
+    box-sizing: border-box;
+    box-shadow: 0 0 20px rgba(125, 211, 252, 0.08);
+}
+
+.logs-title {
+    color: #f8fbff;
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 20px 0;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.RecentLogs table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.RecentLogs th {
+    color: #f8fbff;
+    font-weight: 700;
+    padding: 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid rgba(31, 79, 130, 0.8);
+}
+
+.RecentLogs td {
+    color: #dbeafe;
+    padding: 12px 8px;
+    text-align: left;
+}
+
+.RecentLogs tbody tr {
+    border-top: 1px solid rgba(31, 79, 130, 0.45);
+}
+
+.RecentLogs tbody tr:hover {
+    background-color: rgba(125, 211, 252, 0.06);
+}
+
+.log-time {
+    color: #9fb3c8;
+    font-weight: 600;
+}
+
+.log-service {
+    color: #7dd3fc;
+    font-weight: 700;
+}
+
+.error-text {
+    color: #fca5a5;
+    font-weight: 700;
+}
+
+.no-error {
+    color: #86efac;
+    font-weight: 700;
+}

@@ -10,7 +10,7 @@ export function MetricsSummary() {
         <section id="metrics-summary">
             <h2>Metrics Summary</h2>
 
-            <div className="metric-gird">
+            <div className="metric-grid">
                 {
                     Object.entries(metrics).map(([metricName, metricValue]) => (
                         <article key={metricName} className="metric">

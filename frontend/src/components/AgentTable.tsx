@@ -14,8 +14,8 @@ const agents: Agent[] = [
 ];
 export function AgentTable() {
     return (
-        <div className={"AgentTable"}>
-            <h1>Agent List</h1>
+        <div className="AgentTable">
+            <h1 className="agent-table-title">Agent List</h1>
             <table>
                 <thead>
                 <tr>
