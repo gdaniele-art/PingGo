@@ -11,9 +11,11 @@ import com.gdaniele_art.pinggo.mapper.MonitoredServiceMapper;
 import com.gdaniele_art.pinggo.repository.AgentRepository;
 import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
 import com.gdaniele_art.pinggo.service.MonitoredServiceService;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
     @Autowired
@@ -27,6 +29,8 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
 
     @Override
+    @Transactional
+
     public MonitoredServiceResponse createMonitoredService(CreateMonitoredServiceRequest request){
         if(request == null) throw new RuntimeException("Invalid request");
         if (request.getCheckMethod() == null)  throw new RuntimeException("Method cannot be null");
@@ -79,6 +83,8 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     }
 
     @Override
+    @Transactional
+
     public MonitoredServiceResponse enableMonitoredService(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
@@ -90,6 +96,8 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     }
 
     @Override
+    @Transactional
+
     public MonitoredServiceResponse disableMonitoredService(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
@@ -101,6 +109,8 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     }
 
     @Override
+    @Transactional
+
     public void deleteMonitoredService(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)

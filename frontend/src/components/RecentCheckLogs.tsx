@@ -31,10 +31,10 @@ export function RecentLogs({logsData}: RecentCheckLogProps) {
                             <td>{log.serviceName}</td>
                             <td>{log.status}</td>
                             <td>{log.httpStatusCode}</td>
-                            <td>{log.latency}</td>
-                            <td>{log.error}</td>
+                            <td>{log.latencyMs}</td>
+                            <td>{log.errorMessage || "-"}</td>
                             <td>{log.checkedAt}</td>
-                            <td>{log.revicedAt}</td>
+                            <td>{log.receivedAt}</td>
 
                         </tr>
                     ))}

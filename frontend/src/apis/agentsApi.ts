@@ -1,9 +1,7 @@
 import type {AgentResponse} from "../types/dashboard.ts";
 
-const API_URL = 'http://localhost:8080';
-
 export async function getAllAgents():Promise<AgentResponse[]> {
-    const resp: Response = await fetch(`${API_URL}/api/agents`);
+    const resp: Response = await fetch("/api/agents");
     if(!resp.ok) {
         throw new Error(`Failed to fetch agents`);
     }

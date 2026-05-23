@@ -84,9 +84,9 @@ config/configuration.yml
 backend/config/configuration.yml
 
 # Agent local config
-agent/config.yaml
-agent/config/config.yaml
-!agent/config/config.example.yaml
+agent/config.yml
+agent/config/config.yml
+!agent/config/config.example.yml
 
 # Frontend local env
 frontend/.env
@@ -123,3 +123,6 @@ pnpm-debug.log*
 # =========================
 docker-data/
 volumes/
+
+# Local test controllers
+backend/src/main/java/**/TestController.java

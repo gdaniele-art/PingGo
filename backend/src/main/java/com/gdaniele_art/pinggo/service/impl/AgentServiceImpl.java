@@ -11,8 +11,10 @@ import com.gdaniele_art.pinggo.entity.Agent;
 import com.gdaniele_art.pinggo.mapper.AgentMapper;
 import com.gdaniele_art.pinggo.repository.AgentRepository;
 import com.gdaniele_art.pinggo.service.AgentService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class AgentServiceImpl implements AgentService {
     @Autowired
     private AgentRepository agentRepository;
@@ -21,6 +23,8 @@ public class AgentServiceImpl implements AgentService {
     private AgentMapper agentMapper;
 
     @Override
+    @Transactional
+
     public AgentResponse createAgent(CreateAgentRequest request){
         if(request == null) throw new RuntimeException("agent does not exist");
 
@@ -56,6 +60,8 @@ public class AgentServiceImpl implements AgentService {
     }
     
     @Override
+    @Transactional
+
     public AgentResponse enableAgent(Long id){
         if(id == null) throw new RuntimeException("Agent id cannot be null");
 
@@ -73,6 +79,8 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    @Transactional
+
     public AgentResponse disableAgent(Long id){
         if(id == null) throw new RuntimeException("Agent id cannot be null");
 
@@ -89,6 +97,8 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
+    @Transactional
+
     public void deleteAgent(Long id){
         if(id == null) throw new RuntimeException("Agent id cannot be null");
 

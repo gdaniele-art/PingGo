@@ -1,13 +1,15 @@
+import type { AgentResponse, MonitoredServiceResponse } from "../types/dashboard.ts";
 
-import type {AgentResponse} from "../types/dashboard.ts";
-
-type AgebtTableProps = {
+type AgentTableProps = {
     agents: AgentResponse[];
+    services: MonitoredServiceResponse[];
 };
-export function AgentTable({agents}: AgebtTableProps) {
+
+export function AgentTable({ agents, services }: AgentTableProps) {
     return (
-        <div className={"AgentTable"}>
+        <div className="AgentTable">
             <h1 className="agent-table-title">Agent List</h1>
+
             <table>
                 <thead>
                 <tr>
@@ -16,26 +18,31 @@ export function AgentTable({agents}: AgebtTableProps) {
                     <th>Enabled</th>
                     <th>Services Count</th>
                     <th>Services</th>
-
-
                 </tr>
                 </thead>
+
                 <tbody>
-                {
-                    agents.map((agent) => (
+                {agents.map((agent) => {
+                    const agentServices = services.filter(
+                        (service) => service.agentId === agent.id
+                    );
+
+                    const serviceNames = agentServices
+                        .map((service) => service.name)
+                        .join(", ");
+
+                    return (
                         <tr key={agent.id}>
                             <td>{agent.name}</td>
                             <td>{agent.description}</td>
-                            <td>{agent.enabled ? 'ONLINE' : 'OFFLINE'}</td>
-                            <td>{agent.services.length}</td>
-                            <td>{agent.services.join(', ')}</td>
-
+                            <td>{agent.enabled ? "ONLINE" : "OFFLINE"}</td>
+                            <td>{agentServices.length}</td>
+                            <td>{serviceNames || "-"}</td>
                         </tr>
-                    ))
-                }
+                    );
+                })}
                 </tbody>
             </table>
         </div>
-
     );
 }

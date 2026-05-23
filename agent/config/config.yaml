@@ -1,0 +1,9 @@
+apiUrl: "http://localhost:8080"
+agentId: 1
+intervalSeconds: 5
+timeoutSeconds: 5
+
+services:
+  - serviceKey: "auth-api"
+    url: "http://localhost:8080/api/test/health"
+    checkMethod: "HTTP_GET"

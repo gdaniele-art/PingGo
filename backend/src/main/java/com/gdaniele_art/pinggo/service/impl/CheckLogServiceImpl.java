@@ -8,6 +8,7 @@ import com.gdaniele_art.pinggo.mapper.CheckLogMapper;
 import com.gdaniele_art.pinggo.repository.CheckLogRepository;
 import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
 import com.gdaniele_art.pinggo.service.CheckLogService;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class CheckLogServiceImpl implements CheckLogService{
     @Autowired
     private CheckLogRepository checkLogRepository;
@@ -26,6 +28,7 @@ public class CheckLogServiceImpl implements CheckLogService{
     private MonitoredServiceRepository monitoredServiceRepository;
 
     @Override
+    @Transactional
     public CheckLogResponse registerCheckResult(CheckResultRequest request){
         if(request == null) throw new IllegalArgumentException("Request cannot be null");
         Long agentId = request.getAgentId();
@@ -84,7 +87,7 @@ public class CheckLogServiceImpl implements CheckLogService{
 
     @Override
     public List<CheckLogResponse> getRecentLogs(){
-        List<CheckLog> checklogs = checkLogRepository.findTop50ByOrderByCheckedAtDesc();
+        List<CheckLog> checklogs = checkLogRepository.findTop15ByOrderByCheckedAtDesc();
 
         return checkLogMapper.toResponseList(checklogs);
     }

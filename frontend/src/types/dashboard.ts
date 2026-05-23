@@ -1,7 +1,6 @@
 export type ServiceStatus = "UP"|"DOWN"|"UNKNOWN";
 export type agentStatus = "ONLINE"|"OFFLINE"|"UNKNOWN";
-export type CheckMethod = "HTTP"|"TCP"|"PING";
-
+export type CheckMethod = "HTTP_GET" | "TCP" | "PING";
 export type MonitoredServiceResponse = {
     id: number;
     serviceKey: string;
@@ -29,8 +28,8 @@ export type CheckLogResponse = {
     serviceName: string;
     status: ServiceStatus;
     httpStatusCode: number;
-    latency: number;
-    error: string;
+    latencyMs: number;
+    errorMessage: string;
     checkedAt: string;
-    revicedAt: string;
-}
+    receivedAt: string;
+};

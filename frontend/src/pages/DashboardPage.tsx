@@ -47,7 +47,7 @@ export function DashboardPage() {
 
             <div className="tables-container">
                 <ServicesTable services={services} />
-                <AgentTable agents={agents} />
+                <AgentTable agents={agents} services={services} />
             </div>
 
             <RecentLogs logsData ={logs} />
