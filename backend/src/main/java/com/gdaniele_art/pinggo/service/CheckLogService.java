@@ -15,4 +15,6 @@ public interface CheckLogService {
     List<CheckLogResponse> getRecentLogsByServiceKey(String serviceKey);
 
     List<CheckLogResponse> getRecentLogsByMonitoredServiceId(Long monitoredServiceId);
+
+    List<CheckLogResponse> getRecentLogs();
 }

@@ -1,25 +1,27 @@
-const metrics ={
-    totalAgents: 3,
-    onlineAgents: 2,
-    offlineAgents: 1,
-    totalServices: 5
-}
+import type {AgentResponse, MonitoredServiceResponse} from "../types/dashboard.ts";
 
-export function MetricsSummary() {
+type MetricsSummaryProps = {
+    services: MonitoredServiceResponse[];
+    agents: AgentResponse[];
+}
+export function MetricsSummary({services, agents}: MetricsSummaryProps) {
+    const agentsCount = agents.length;
+    const totalServices = services.length;
+    const onlineAgents = agents.filter(agent => agent.enabled).length;
+    const offlineAgents = agents.length - onlineAgents;
     return (
         <section id="metrics-summary">
             <h2>Metrics Summary</h2>
 
             <div className="metric-grid">
-                {
-                    Object.entries(metrics).map(([metricName, metricValue]) => (
-                        <article key={metricName} className="metric">
-                            <p className="metric-name">{metricName}</p>
-                            <p className="metric-value">{metricValue}</p>
-                        </article>
-                    ))
+                <article>
+                    <h3>Metrics Summary</h3>
+                    <p>Total Agents: {agentsCount}</p>
+                    <p>Online Agents: {onlineAgents}</p>
+                    <p>Offline Agents: {offlineAgents}</p>
+                    <p>Total Services: {totalServices}</p>
 
-                }
+                </article>
             </div>
         </section>
     );

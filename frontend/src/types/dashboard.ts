@@ -12,3 +12,25 @@ export type MonitoredServiceResponse = {
     agentId: number;
     agentName: string;
 };
+
+export type AgentResponse = {
+    id: number;
+    name: string;
+    description: string;
+    enabled: boolean;
+    servicesCount: number;
+    services: MonitoredServiceResponse[];
+};
+
+export type CheckLogResponse = {
+    id: number;
+    monitoredServiceId: number;
+    serviceKey: string;
+    serviceName: string;
+    status: ServiceStatus;
+    httpStatusCode: number;
+    latency: number;
+    error: string;
+    checkedAt: string;
+    revicedAt: string;
+}

@@ -18,6 +18,11 @@ public class CheckLogController {
     @Autowired
     private CheckLogService checkLogService;
 
+    @GetMapping("/recent")
+    public ResponseEntity<List<CheckLogResponse>> getRecentLogs (){
+        return ResponseEntity.ok(checkLogService.getRecentLogs());
+    }
+
     @GetMapping("/service-key/{serviceKey}/last")
     public ResponseEntity<CheckLogResponse> getLastLogByServiceKey(@PathVariable String serviceKey){
         return ResponseEntity.ok(checkLogService.getLastLogByServiceKey(serviceKey));

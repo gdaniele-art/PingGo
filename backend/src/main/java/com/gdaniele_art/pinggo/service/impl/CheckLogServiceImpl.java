@@ -82,4 +82,11 @@ public class CheckLogServiceImpl implements CheckLogService{
         return checkLogMapper.toResponseList(checkLogs);
     }
 
+    @Override
+    public List<CheckLogResponse> getRecentLogs(){
+        List<CheckLog> checklogs = checkLogRepository.findTop50ByOrderByCheckedAtDesc();
+
+        return checkLogMapper.toResponseList(checklogs);
+    }
+
 }

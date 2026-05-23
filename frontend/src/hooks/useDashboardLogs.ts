@@ -1,9 +1,10 @@
 import {useEffect, useState} from "react";
-import {getAllServices} from "../apis/serivcesApi.ts";
-import type {MonitoredServiceResponse} from "../types/dashboard.ts";
+import type {CheckLogResponse} from "../types/dashboard.ts";
+import {getRecentLogs} from "../apis/checkLogsAPI.ts";
 
-export function useDashboardServices() {
-    const[data,setData] = useState<MonitoredServiceResponse[]>([]);
+
+export function useDashboardLogs() {
+    const[data,setData] = useState<CheckLogResponse[]>([]);
     const[loading,setLoading] = useState<boolean>(true);
     const[error,setError] = useState<string | null>(null);
 
@@ -13,7 +14,7 @@ export function useDashboardServices() {
                 setLoading(true);
                 setError(null);
 
-                const res = await getAllServices();
+                const res = await getRecentLogs();
                 setData(res);
             } catch (err) {
 
