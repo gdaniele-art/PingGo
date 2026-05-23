@@ -1,46 +1,43 @@
-import type {CheckLogResponse} from "../types/dashboard.ts";
+import type { CheckLogResponse } from "../types/dashboard.ts";
+import { StatusBadge } from "./StatusBadge.tsx";
+import { formatDateTime, formatErrorMessage } from "../utils/formatters.ts";
 
-type RecentCheckLogProps = {
-    logsData: CheckLogResponse[];
+type RecentCheckLogsProps = {
+    logs: CheckLogResponse[];
 };
-export function RecentLogs({logsData}: RecentCheckLogProps) {
+
+export function RecentLogs({ logs }: RecentCheckLogsProps) {
     return (
         <div className="RecentLogs">
             <h1 className="logs-title">Recent Check Logs</h1>
-            <div className="table-responsive">
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Monitored Service ID</th>
-                        <th>Service Key</th>
-                        <th>Service Name</th>
-                        <th>Status</th>
-                        <th>http Status</th>
-                        <th>Latency</th>
-                        <th>Error</th>
-                        <th>Checked At</th>
-                        <th>Received At</th>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Service</th>
+                    <th>Status</th>
+                    <th>HTTP Status</th>
+                    <th>Latency</th>
+                    <th>Error</th>
+                    <th>Checked At</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {logs.map((log) => (
+                    <tr key={log.id}>
+                        <td>{log.serviceName}</td>
+                        <td>
+                            <StatusBadge value={log.status} />
+                        </td>
+                        <td>{log.httpStatusCode}</td>
+                        <td>{log.latencyMs} ms</td>
+                        <td>{formatErrorMessage(log.errorMessage)}</td>
+                        <td>{formatDateTime(log.checkedAt)}</td>
                     </tr>
-                    </thead>
-                    <tbody>
-                    {logsData.map((log) => (
-
-                        <tr key={log.id}>
-                            <td>{log.monitoredServiceId}</td>
-                            <td>{log.serviceKey}</td>
-                            <td>{log.serviceName}</td>
-                            <td>{log.status}</td>
-                            <td>{log.httpStatusCode}</td>
-                            <td>{log.latencyMs}</td>
-                            <td>{log.errorMessage || "-"}</td>
-                            <td>{log.checkedAt}</td>
-                            <td>{log.receivedAt}</td>
-
-                        </tr>
-                    ))}
-                    </tbody>
-                </table>
-            </div>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 }

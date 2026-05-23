@@ -1,13 +1,18 @@
 type StatusBadgeProps = {
-    status: "UP" | "DOWN" | "ONLINE" | "OFFLINE";
+    value: string | boolean;
 };
 
-export function StatusBadge({ status }: StatusBadgeProps) {
-    const isHealthy = status === "UP" || status === "ONLINE";
+export function StatusBadge({ value }: StatusBadgeProps) {
+    const label =
+        typeof value === "boolean"
+            ? value ? "ONLINE" : "OFFLINE"
+            : value;
 
-    const className = isHealthy
-        ? "status-badge status-badge-ok"
-        : "status-badge status-badge-error";
+    const className = `status-badge status-${label.toLowerCase()}`;
 
-    return <span className={className}>{status}</span>;
+    return (
+        <span className={className}>
+            {label}
+        </span>
+    );
 }

@@ -1,29 +1,30 @@
-import { useDashboardServices } from "../hooks/useDashboardServices";
-import { useDashboardAgents } from "../hooks/useDashboardAgents";
-import { MetricsSummary } from "../components/MetricsSummary";
-import { ServicesTable } from "../components/ServicesTable";
-import { AgentTable } from "../components/AgentTable";
-import { RecentLogs } from "../components/RecentCheckLogs";
-import {useDashboardLogs} from "../hooks/useDashboardLogs.ts";
+import { useServices } from "../hooks/useServices.ts";
+import { useAgents } from "../hooks/useAgents.ts";
+import { useLogs } from "../hooks/useLogs.ts";
+
+import { MetricsSummary } from "../components/MetricsSummary.tsx";
+import { ServicesSummary } from "../components/ServicesSummary.tsx";
+import { AgentsSummary } from "../components/AgentsSummary.tsx";
+import { RecentLogs } from "../components/RecentCheckLogs.tsx";
 
 export function DashboardPage() {
     const {
         data: services,
         loading: servicesLoading,
         error: servicesError,
-    } = useDashboardServices();
+    } = useServices();
 
     const {
         data: agents,
         loading: agentsLoading,
         error: agentsError,
-    } = useDashboardAgents();
+    } = useAgents();
 
     const {
         data: logs,
         loading: logsLoading,
         error: logsError,
-    } = useDashboardLogs();
+    } = useLogs();
 
     const isLoading = servicesLoading || agentsLoading || logsLoading;
     const error = servicesError || agentsError || logsError;
@@ -33,24 +34,32 @@ export function DashboardPage() {
     }
 
     if (error) {
-        return <p>Error: {error}</p>;
+        return <p>Error loading dashboard: {error}</p>;
     }
-
     return (
-        <div className="dashboard-page">
-            <h1 className="dashboard-title">PingGo dashboard</h1>
-            <p className="dashboard-description">
-                Welcome to the PingGo dashboard.
-            </p>
+        <main className="DashboardPage">
+            <h1 className="dashboard-title">PingGo Dashboard</h1>
 
-            <MetricsSummary services={services} agents={agents} />
+            <MetricsSummary
+                services={services}
+                agents={agents}
+            />
 
-            <div className="tables-container">
-                <ServicesTable services={services} />
-                <AgentTable agents={agents} services={services} />
+            <div className="dashboard-summary-grid">
+                <ServicesSummary
+                    services={services}
+                    maxItems={5}
+                />
+
+                <AgentsSummary
+                    agents={agents}
+                    services={services}
+                    maxItems={3}
+                    maxServiceNames={3}
+                />
             </div>
 
-            <RecentLogs logsData ={logs} />
-        </div>
+            <RecentLogs logs={logs}/>
+        </main>
     );
 }

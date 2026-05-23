@@ -1,33 +1,36 @@
 import type { MonitoredServiceResponse } from "../types/dashboard.ts";
 import { StatusBadge } from "./StatusBadge.tsx";
 
-type ServicesTableProps = {
+type ServicesSummaryProps = {
     services: MonitoredServiceResponse[];
+    maxItems?: number;
 };
 
-export function ServicesTable({ services }: ServicesTableProps) {
+export function ServicesSummary({ services, maxItems = 5 }: ServicesSummaryProps) {
+    const visibleServices = services.slice(0, maxItems);
+    const hiddenCount = Math.max(services.length - maxItems, 0);
+
     return (
-        <div className="ServicesTable">
-            <h1 className="services-table-title">Services</h1>
+        <section className="summary-card">
+            <div className="summary-card-header">
+                <h2>Services Overview</h2>
+                <span>{services.length} total</span>
+            </div>
 
             <table>
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Service Key</th>
-                    <th>URL</th>
                     <th>Method</th>
                     <th>Agent</th>
-                    <th>Enabled</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
 
                 <tbody>
-                {services.map((service) => (
+                {visibleServices.map((service) => (
                     <tr key={service.id}>
                         <td>{service.name}</td>
-                        <td>{service.serviceKey}</td>
-                        <td>{service.url}</td>
                         <td>{service.checkMethod}</td>
                         <td>{service.agentName}</td>
                         <td>
@@ -37,6 +40,12 @@ export function ServicesTable({ services }: ServicesTableProps) {
                 ))}
                 </tbody>
             </table>
-        </div>
+
+            {hiddenCount > 0 && (
+                <p className="summary-footer">
+                    + {hiddenCount} more services
+                </p>
+            )}
+        </section>
     );
 }

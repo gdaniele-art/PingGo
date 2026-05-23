@@ -1,4 +1,5 @@
 import type { AgentResponse, MonitoredServiceResponse } from "../types/dashboard.ts";
+import { StatusBadge } from "./StatusBadge.tsx";
 
 type AgentTableProps = {
     agents: AgentResponse[];
@@ -8,14 +9,14 @@ type AgentTableProps = {
 export function AgentTable({ agents, services }: AgentTableProps) {
     return (
         <div className="AgentTable">
-            <h1 className="agent-table-title">Agent List</h1>
+            <h1 className="agent-table-title">Agents</h1>
 
             <table>
                 <thead>
                 <tr>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Enabled</th>
+                    <th>Status</th>
                     <th>Services Count</th>
                     <th>Services</th>
                 </tr>
@@ -35,7 +36,9 @@ export function AgentTable({ agents, services }: AgentTableProps) {
                         <tr key={agent.id}>
                             <td>{agent.name}</td>
                             <td>{agent.description}</td>
-                            <td>{agent.enabled ? "ONLINE" : "OFFLINE"}</td>
+                            <td>
+                                <StatusBadge value={agent.enabled} />
+                            </td>
                             <td>{agentServices.length}</td>
                             <td>{serviceNames || "-"}</td>
                         </tr>

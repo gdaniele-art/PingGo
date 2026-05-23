@@ -1,9 +1,9 @@
+import type {AgentResponse} from "../types/dashboard.ts";
 import {useEffect, useState} from "react";
-import {getAllServices} from "../apis/serivcesApi.ts";
-import type {MonitoredServiceResponse} from "../types/dashboard.ts";
+import {getAllAgents} from "../apis/agentsApi.ts";
 
-export function useDashboardServices() {
-    const[data,setData] = useState<MonitoredServiceResponse[]>([]);
+export function useAgents() {
+    const[data,setData] = useState<AgentResponse[]>([]);
     const[loading,setLoading] = useState<boolean>(true);
     const[error,setError] = useState<string | null>(null);
 
@@ -12,22 +12,20 @@ export function useDashboardServices() {
             try {
                 setLoading(true);
                 setError(null);
-
-                const res = await getAllServices();
+                const res = await getAllAgents();
                 setData(res);
             } catch (err) {
-
                 if (err instanceof Error) {
                     setError(err.message);
                 } else {
                     setError("Unknown error occurred");
                 }
-            } finally {
+            }finally {
                 setLoading(false);
             }
         };
         getData();
     }, []);
 
-    return { data, loading, error };
+    return {data,loading,error};
 }
