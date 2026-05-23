@@ -1,21 +1,10 @@
-import {StatusBadge} from "./StatusBadge.tsx";
-type ServiceStatus = "UP" | "DOWN";
+import type {MonitoredServiceResponse} from "../types/dashboard.ts";
 
-type Service = {
-    name: string;
-    status: ServiceStatus;
-    latency: string;
-    HTTPStatus: number;
-    agent: string;
-    lastCheck: string;
+type ServicesTableProps = {
+    services: MonitoredServiceResponse[];
 };
-const services: Service[] = [{name: "auth",status: "UP",latency:"20Ms",HTTPStatus: 202,
-    agent:"auth-api",lastCheck: "2 min ago"}, {name: "auth2",status: "DOWN",latency:"220Ms",HTTPStatus: 0,
-    agent:"authux-api",lastCheck: "5 min ago"}, {name: "auth3",status: "UP",latency:"20Ms",HTTPStatus: 202,
-    agent:"auth-api",lastCheck: "2 min ago"}, {name: "auth4",status: "DOWN",latency:"220Ms",HTTPStatus: 0,
-    agent:"authux-api",lastCheck: "5 min ago"}
-]
-export function ServicesTable() {
+
+export function ServicesTable({services}: ServicesTableProps) {
     return (
         <div className={"ServicesTable"}>
             <h1>Services List</h1>
@@ -23,25 +12,23 @@ export function ServicesTable() {
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Status</th>
-                    <th>Latency</th>
-                    <th>HTTP Status</th>
+                    <th>Service Key</th>
+                    <th>URL</th>
+                    <th>Check Method</th>
+                    <th>Enabled</th>
                     <th>Agent</th>
-                    <th>Last Check</th>
                 </tr>
                 </thead>
                 <tbody>
                 {
                     services.map((service) => (
-                        <tr key={service.name}>
+                        <tr key={service.id}>
                             <td>{service.name}</td>
-                            <td>
-                                <StatusBadge status={service.status} />
-                            </td>
-                            <td>{service.latency}</td>
-                            <td>{service.HTTPStatus}</td>
-                            <td>{service.agent}</td>
-                            <td>{service.lastCheck}</td>
+                            <td>{service.serviceKey}</td>
+                            <td>{service.url}</td>
+                            <td>{service.checkMethod}</td>
+                            <td>{service.enabled ? "Enabled" : "Disabled"}</td>
+                            <td>{service.agentName}</td>
                         </tr>
                     ))
                 }
