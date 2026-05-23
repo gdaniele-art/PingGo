@@ -126,3 +126,7 @@ volumes/
 
 # Local test controllers
 backend/src/main/java/**/TestController.java
+
+# Node
+frontend/node_modules/
+node_modules/
