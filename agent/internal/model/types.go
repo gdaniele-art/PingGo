@@ -39,3 +39,9 @@ type ProcessResult struct {
 	Status     string
 	Error      error
 }
+
+type APIErrorResponse struct {
+	Status  int               `json:"status"`
+	Message string            `json:"message"`
+	Errors  map[string]string `json:"errors"`
+}

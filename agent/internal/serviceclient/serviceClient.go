@@ -39,7 +39,14 @@ func FetchServices(apiURL string, agentID int) ([]model.Service, error) {
 	}
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("failed to fetch services: status %d, body: %s", resp.StatusCode, string(body))
+		var apiError model.APIErrorResponse
+		if err := json.Unmarshal(body, &apiError); err == nil && apiError.Message != "" {
+			return nil, fmt.Errorf("API returned status %d : %s", resp.StatusCode, apiError.Message)
+		}
+
+		//fallback
+		return nil, fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
+
 	}
 
 	var services []model.Service
