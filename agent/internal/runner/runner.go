@@ -43,6 +43,10 @@ func RunOnce(apiURL string, agentID int, timeout time.Duration) {
 	}
 	ch := make(chan model.ProcessResult, len(services))
 	for _, service := range services {
+		if err := checker.ValidateService(service); err != nil {
+			fmt.Printf("[ERROR] invalid service config: %v\n", err)
+			continue
+		}
 		go ProcessService(apiURL, agentID, service, timeout, ch)
 	}
 
