@@ -6,33 +6,23 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+var configPath string
+
 var rootCmd = &cobra.Command{
 	Use:   "monitor-agent",
-	Short: "PingGo internal service monitoring event",
-	Long: `PingGo Agent monitors configured internal services, checks their health periodically,
-	and reports check results to the PingGo backend API`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Short: "PingGo internal service monitoring agent",
+	Long:  `PingGo Agent runs inside a private network, fetches enabled monitored services from the PingGo backend, checks them periodically, and reports health check results back to the API.`,
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
 }
-
+func GetConfigPath() string {
+	return configPath
+}
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.agent.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
+	rootCmd.PersistentFlags().StringVarP(&configPath, "config", "c", "config/config.yaml", "Path to the configuration file")
 }
