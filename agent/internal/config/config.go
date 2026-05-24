@@ -38,18 +38,5 @@ func ValidateConfig(cfg model.Config) error {
 		return fmt.Errorf("timeoutSeconds must be greater than 0")
 	}
 
-	if len(cfg.Services) == 0 {
-		return fmt.Errorf("at least one service is required")
-	}
-
-	for _, service := range cfg.Services {
-		if service.ServiceKey == "" {
-			return fmt.Errorf("serviceKey is required")
-		}
-
-		if service.URL == "" {
-			return fmt.Errorf("url is required for service %s", service.ServiceKey)
-		}
-	}
 	return nil
 }

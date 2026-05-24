@@ -3,19 +3,18 @@ package model
 import "time"
 
 type Config struct {
-	APIUrl          string    `yaml:"apiUrl"`
-	AgentID         int       `yaml:"agentId"`
-	IntervalSeconds int       `yaml:"intervalSeconds"`
-	TimeoutSeconds  int       `yaml:"timeoutSeconds"`
-	Services        []Service `yaml:"services"`
+	APIUrl          string `yaml:"apiUrl"`
+	AgentID         int    `yaml:"agentId"`
+	IntervalSeconds int    `yaml:"intervalSeconds"`
+	TimeoutSeconds  int    `yaml:"timeoutSeconds"`
 }
 
 type Service struct {
-	ServiceKey  string `yaml:"serviceKey"`
-	URL         string `yaml:"url"`
-	CheckMethod string `yaml:"checkMethod"`
+	ServiceKey  string `json:"serviceKey"`
+	Name        string `json:"name"`
+	URL         string `json:"url"`
+	CheckMethod string `json:"checkMethod"`
 }
-
 type CheckResult struct {
 	URL            string
 	Status         string

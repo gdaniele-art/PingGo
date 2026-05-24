@@ -7,6 +7,7 @@ import (
 	"github.com/gdaniele-art/pinggo/agent/internal/checker"
 	"github.com/gdaniele-art/pinggo/agent/internal/model"
 	"github.com/gdaniele-art/pinggo/agent/internal/reporter"
+	"github.com/gdaniele-art/pinggo/agent/internal/serviceclient"
 )
 
 func ProcessService(apiURL string, agentID int, service model.Service, timeout time.Duration, ch chan<- model.ProcessResult) {
@@ -30,7 +31,16 @@ func ProcessService(apiURL string, agentID int, service model.Service, timeout t
 	}
 }
 
-func RunOnce(apiURL string, agentID int, services []model.Service, timeout time.Duration) {
+func RunOnce(apiURL string, agentID int, timeout time.Duration) {
+	services, err := serviceclient.FetchServices(apiURL, agentID)
+	if err != nil {
+		fmt.Printf("failed to fetch services: %v\n", err)
+		return
+	}
+	if len(services) == 0 {
+		fmt.Println("[INFO] no enabled services configured for this agent")
+		return
+	}
 	ch := make(chan model.ProcessResult, len(services))
 	for _, service := range services {
 		go ProcessService(apiURL, agentID, service, timeout, ch)
@@ -46,9 +56,9 @@ func RunOnce(apiURL string, agentID int, services []model.Service, timeout time.
 		fmt.Printf("[OK] %s reported status=%s\n", result.ServiceKey, result.Status)
 	}
 }
-func RunLoop(apiURL string, agentID int, services []model.Service, interval time.Duration, timeout time.Duration) {
+func RunLoop(apiURL string, agentID int, interval time.Duration, timeout time.Duration) {
 	for {
-		RunOnce(apiURL, agentID, services, timeout)
+		RunOnce(apiURL, agentID, timeout)
 		time.Sleep(interval)
 	}
 }

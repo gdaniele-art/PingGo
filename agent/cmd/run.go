@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"fmt"
+
 	"github.com/gdaniele-art/pinggo/agent/internal/config"
 	"github.com/gdaniele-art/pinggo/agent/internal/runner"
 	"github.com/spf13/cobra"
@@ -27,7 +28,7 @@ var runCmd = &cobra.Command{
 		intervalSeconds := time.Duration(cfg.IntervalSeconds) * time.Second
 		timeoutSeconds := time.Duration(cfg.TimeoutSeconds) * time.Second
 
-		runner.RunLoop(cfg.APIUrl, cfg.AgentID, cfg.Services, intervalSeconds, timeoutSeconds)
+		runner.RunLoop(cfg.APIUrl, cfg.AgentID, intervalSeconds, timeoutSeconds)
 
 		return nil
 
