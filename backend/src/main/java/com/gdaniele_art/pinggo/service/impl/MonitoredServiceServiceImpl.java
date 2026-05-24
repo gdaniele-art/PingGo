@@ -122,4 +122,18 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
         monitoredServiceRepository.delete(monitoredService);
     }
+
+    @Override
+    public List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId) {
+        if(agentId == null) throw new IllegalArgumentException("Agent id cannot be null");
+
+        Agent agent = agentRepository.findById(agentId)
+                .orElseThrow(() -> new NotFoundException("Agent not found"));
+        if(!agent.isEnabled()) throw new IllegalStateException("Agent is disabled");
+
+        List<MonitoredService> monitoredServices = monitoredServiceRepository.findByAgent_IdAndEnabledTrue(agentId);
+        return monitoredServices.stream()
+                .map(monitoredServiceMapper::toResponse)
+                .toList();
+    }
 }

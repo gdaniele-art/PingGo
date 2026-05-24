@@ -20,4 +20,6 @@ public interface MonitoredServiceService {
     MonitoredServiceResponse disableMonitoredService(Long id);
 
     void deleteMonitoredService(Long id);
+
+    List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId);
 }
