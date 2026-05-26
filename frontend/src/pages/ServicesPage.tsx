@@ -62,7 +62,8 @@ export function ServicesPage() {
                         addService={async (payload) => {
                             await addService(payload);
                             setShowForm(false);
-                        }}/>
+                        }}
+                    />
                 </section>
             )}
 
@@ -72,7 +73,8 @@ export function ServicesPage() {
                     type="text"
                     placeholder="Search by name, service key, URL, agent or method..."
                     value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}/>
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                />
 
                 <span className="results-count">
                     {filteredServices.length} result{filteredServices.length === 1 ? "" : "s"}

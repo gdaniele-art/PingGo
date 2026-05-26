@@ -1,5 +1,6 @@
 import type { MonitoredServiceResponse } from "../types/dashboard.ts";
 import { StatusBadge } from "./StatusBadge.tsx";
+import { Link } from "react-router-dom";
 
 type ServicesTableProps = {
     services: MonitoredServiceResponse[];
@@ -25,7 +26,10 @@ export function ServicesTable({ services }: ServicesTableProps) {
                 <tbody>
                 {services.map((service) => (
                     <tr key={service.id}>
-                        <td>{service.name}</td>
+                        <td><Link to={`/services/${service.serviceKey}`}>
+                            {service.name}
+                        </Link>
+                        </td>
                         <td>{service.serviceKey}</td>
                         <td>{service.url}</td>
                         <td>{service.checkMethod}</td>
