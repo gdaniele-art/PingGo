@@ -22,4 +22,6 @@ public interface MonitoredServiceService {
     void deleteMonitoredService(Long id);
 
     List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId);
+
+    List<MonitoredServiceResponse> getEnabledMonitoredServicesByAgentId(Long agentId);
 }

@@ -124,7 +124,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     }
 
     @Override
-    public List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId) {
+    public List<MonitoredServiceResponse> getEnabledMonitoredServicesByAgentId(Long agentId) {
         if(agentId == null) throw new IllegalArgumentException("Agent id cannot be null");
 
         Agent agent = agentRepository.findById(agentId)
@@ -133,6 +133,19 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
 
         List<MonitoredService> monitoredServices = monitoredServiceRepository.findByAgent_IdAndEnabledTrue(agentId);
         return monitoredServices.stream()
+                .map(monitoredServiceMapper::toResponse)
+                .toList();
+    }
+
+    @Override
+    public List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId) {
+        if (agentId == null) {
+            throw new IllegalArgumentException("Agent id cannot be null");
+        }
+        Agent agent = agentRepository.findById(agentId)
+                .orElseThrow(() -> new NotFoundException("Agent not found"));
+        return monitoredServiceRepository.findByAgent_Id(agent.getId())
+                .stream()
                 .map(monitoredServiceMapper::toResponse)
                 .toList();
     }

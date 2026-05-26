@@ -16,5 +16,7 @@ public interface MonitoredServiceRepository extends JpaRepository<MonitoredServi
     Optional<MonitoredService> findByServiceKeyAndAgentId(String serviceKey, Long agentId);
 
     List<MonitoredService> findByAgent_IdAndEnabledTrue(Long agentId);
-    
+
+    List<MonitoredService> findByAgent_Id(Long agentId);
+
 }

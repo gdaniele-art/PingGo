@@ -70,9 +70,13 @@ public class AgentController {
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/{id}/services")
-    public ResponseEntity<List<MonitoredServiceResponse>> getAgentServices(@PathVariable Long id){
+    public ResponseEntity<List<MonitoredServiceResponse>> getEnabledAgentServices(@PathVariable Long id){
         return ResponseEntity.ok(monitoredServiceService.getMonitoredServicesByAgentId(id));
     }
 
+    @GetMapping("/{id}/services")
+    public ResponseEntity<List<MonitoredServiceResponse>> getAgentServices(@PathVariable Long id) {
+        return ResponseEntity.ok(monitoredServiceService.getMonitoredServicesByAgentId(id));
+    }
  
 }
