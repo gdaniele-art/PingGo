@@ -5,6 +5,7 @@ import { Navbar } from "./components/Navbar.tsx";
 import {AgentsPage} from "./pages/AgentsPage.tsx";
 import {AgentDetailPage} from "./pages/AgentDetailPage.tsx";
 import {ServiceDetailPage} from "./pages/ServiceDetailPage.tsx";
+import { LogsPage } from "./pages/LogsPage.tsx";
 
 export default function App() {
   return (
@@ -17,6 +18,7 @@ export default function App() {
           <Route path="/services/:serviceKey" element={<ServiceDetailPage/>}/>
           <Route path="/agents" element={<AgentsPage />} />
           <Route path="/agents/:agentId" element={<AgentDetailPage />} />
+          <Route path="/logs" element={<LogsPage />} />
         </Routes>
       </BrowserRouter>
   );

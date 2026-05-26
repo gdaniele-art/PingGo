@@ -16,5 +16,7 @@ public interface CheckLogRepository extends JpaRepository<CheckLog, Long>{
     
     List<CheckLog> findTop50ByMonitoredService_IdOrderByCheckedAtDesc(Long monitoredServiceId);
 
-    List<CheckLog> findTop15ByOrderByCheckedAtDesc();
+    List<CheckLog> findTop50ByOrderByCheckedAtDesc();
+
+    List<CheckLog> findTop50ByMonitoredService_Agent_IdAndStatusOrderByCheckedAtDesc(Long agentId,CheckLog.StatusService status);
 }

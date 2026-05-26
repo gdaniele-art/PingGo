@@ -6,6 +6,7 @@ export function Navbar() {
             <NavLink to="/">Dashboard</NavLink>
             <NavLink to="/services">Services</NavLink>
             <NavLink to="/agents">Agents</NavLink>
+            <NavLink to="/logs">Logs</NavLink>
         </nav>
     );
 }

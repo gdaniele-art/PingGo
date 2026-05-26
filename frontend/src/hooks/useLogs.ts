@@ -1,7 +1,11 @@
 import {useEffect, useState} from "react";
 import type {CheckLogResponse} from "../types/dashboard.ts";
-import {getRecentLogs} from "../apis/checkLogsAPI.ts";
-
+import {
+    getErrorLogsByAgentId,
+    getRecentLogs,
+    getRecentLogsByMonitoredServiceId,
+    getRecentLogsByServiceKey
+} from "../apis/checkLogsApi.ts";
 
 export function useLogs() {
     const[data,setData] = useState<CheckLogResponse[]>([]);
@@ -30,5 +34,89 @@ export function useLogs() {
         getData();
     }, []);
 
-    return { data, loading, error };
+    const loadRecentLogs = async(): Promise<CheckLogResponse[]> => {
+        try{
+            setLoading(true);
+            setError(null);
+
+            const logs = await getRecentLogs();
+            setData(logs);
+
+            return logs;
+        }catch (err){
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Unknown error occurred");
+            }
+            throw err;
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    const loadServiceLogsByServiceKey = async(serviceKey: string): Promise<CheckLogResponse[]> => {
+        try{
+            setLoading(true);
+            setError(null);
+
+            const logs = await getRecentLogsByServiceKey(serviceKey);
+            setData(logs);
+
+            return logs;
+        }catch (err){
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Unknown error occurred");
+            }
+            throw err;
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    const loadServiceLogsByServiceId = async(monitoredServiceId: number): Promise<CheckLogResponse[]> => {
+        try{
+            setLoading(true);
+            setError(null);
+
+            const logs = await getRecentLogsByMonitoredServiceId(monitoredServiceId);
+            setData(logs);
+
+            return logs;
+        }catch (err){
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Unknown error occurred");
+            }
+            throw err;
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    const loadAgentErrorLogs = async(agentId: number): Promise<CheckLogResponse[]> => {
+        try{
+            setLoading(true);
+            setError(null);
+
+            const logs = await getErrorLogsByAgentId(agentId);
+            setData(logs);
+
+            return logs;
+        }catch (err){
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Unknown error occurred");
+            }
+            throw err;
+        }finally {
+            setLoading(false);
+        }
+    }
+
+    return { data, loading, error, loadRecentLogs, loadServiceLogsByServiceKey, loadServiceLogsByServiceId, loadAgentErrorLogs};
 }

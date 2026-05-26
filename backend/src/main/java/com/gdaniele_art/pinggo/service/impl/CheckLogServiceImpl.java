@@ -87,9 +87,18 @@ public class CheckLogServiceImpl implements CheckLogService{
 
     @Override
     public List<CheckLogResponse> getRecentLogs(){
-        List<CheckLog> checklogs = checkLogRepository.findTop15ByOrderByCheckedAtDesc();
+        List<CheckLog> checklogs = checkLogRepository.findTop50ByOrderByCheckedAtDesc();
 
         return checkLogMapper.toResponseList(checklogs);
     }
+
+    public List<CheckLogResponse> getErrorLogsByAgentId(Long agentId) {
+    if(agentId == null) throw new IllegalArgumentException("AgentId cannot be null");
+
+    List<CheckLog> checkLogs = checkLogRepository.findTop50ByMonitoredService_Agent_IdAndStatusOrderByCheckedAtDesc(
+                    agentId,CheckLog.StatusService.DOWN);
+
+    return checkLogMapper.toResponseList(checkLogs);
+}
 
 }

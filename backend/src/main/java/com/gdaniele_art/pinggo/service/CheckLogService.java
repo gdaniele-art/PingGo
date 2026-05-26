@@ -17,4 +17,6 @@ public interface CheckLogService {
     List<CheckLogResponse> getRecentLogsByMonitoredServiceId(Long monitoredServiceId);
 
     List<CheckLogResponse> getRecentLogs();
+
+    List<CheckLogResponse> getErrorLogsByAgentId(Long agentId);
 }
