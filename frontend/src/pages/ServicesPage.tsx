@@ -66,7 +66,7 @@ export function ServicesPage() {
                 </section>
             )}
 
-            <section className="page-toolbar">
+            <section className="page-toolbar-services">
                 <input
                     className="search-input"
                     type="text"
