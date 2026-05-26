@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -35,8 +36,18 @@ func ReportCheckResult(checkResultRequest model.CheckResultRequest, apiURL strin
 	}
 	defer resp.Body.Close()
 
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("error reading response body: %w", err)
+	}
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("API returned unexpected status code: %d", resp.StatusCode)
+		var apiError model.APIErrorResponse
+		if err := json.Unmarshal(body, &apiError); err == nil && apiError.Message != "" {
+			return fmt.Errorf("API returned status %d : %s", resp.StatusCode, apiError.Message)
+		}
+
+		//fallback
+		return fmt.Errorf("API returned status %d: %s", resp.StatusCode, string(body))
 	}
 	return nil
 }

@@ -1,6 +1,8 @@
 package com.gdaniele_art.pinggo.service.impl;
 
+import com.gdaniele_art.pinggo.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import com.gdaniele_art.pinggo.dto.CreateMonitoredServiceRequest;
@@ -32,23 +34,23 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     @Transactional
 
     public MonitoredServiceResponse createMonitoredService(CreateMonitoredServiceRequest request){
-        if(request == null) throw new RuntimeException("Invalid request");
-        if (request.getCheckMethod() == null)  throw new RuntimeException("Method cannot be null");
+        if(request == null) throw new IllegalArgumentException("Invalid request");
+        if (request.getCheckMethod() == null)  throw new IllegalArgumentException("Method cannot be null");
         String requestKey= request.getServiceKey();
 
-        if(requestKey == null || requestKey.isBlank()) throw new RuntimeException("ServiceKey is required");
+        if(requestKey == null || requestKey.isBlank()) throw new IllegalArgumentException ("ServiceKey is required");
 
-        if(monitoredServiceRepository.existsByServiceKey(requestKey)) throw new RuntimeException("Service key already exist");
+        if(monitoredServiceRepository.existsByServiceKey(requestKey)) throw new DuplicateKeyException("Service key already exist");
 
         Long agentId = request.getAgentId();
-        if(agentId == null) throw new RuntimeException("AgentId is required");
+        if(agentId == null) throw new IllegalArgumentException("AgentId is required");
 
         Agent agent = agentRepository.findById(agentId)
-                        .orElseThrow(() ->  new RuntimeException("Agent not found"));
+                        .orElseThrow(() ->  new NotFoundException("Agent not found"));
 
         MonitoredService monitoredService = monitoredServiceMapper.toEntity(request, agent);
 
-        if(monitoredService == null) throw new RuntimeException("Invalid monitoredService");
+        if(monitoredService == null) throw new IllegalArgumentException("Invalid monitoredService");
         MonitoredService savedMonitoredService = monitoredServiceRepository.save(monitoredService);
 
         MonitoredServiceResponse response = monitoredServiceMapper.toResponse(savedMonitoredService);
@@ -69,7 +71,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     public MonitoredServiceResponse getMonitoredServiceById(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
-                                            .orElseThrow(()-> new RuntimeException("Monitored service not found"));
+                                            .orElseThrow(()-> new NotFoundException("Monitored service not found"));
         MonitoredServiceResponse response = monitoredServiceMapper.toResponse(monitoredService);
         return response;
     }
@@ -77,7 +79,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     @Override
     public MonitoredServiceResponse getMonitoredServiceByServiceKey(String serviceKey) {
         MonitoredService monitoredService = monitoredServiceRepository.findByServiceKey(serviceKey)
-                                            .orElseThrow(()-> new RuntimeException("Monitored service not found"));
+                                            .orElseThrow(()-> new NotFoundException("Monitored service not found"));
         MonitoredServiceResponse response = monitoredServiceMapper.toResponse(monitoredService);
         return response;
     }
@@ -88,7 +90,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     public MonitoredServiceResponse enableMonitoredService(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
-                                            .orElseThrow(()-> new RuntimeException("Monitored service not found"));
+                                            .orElseThrow(()-> new NotFoundException("Monitored service not found"));
         monitoredService.setEnabled(true);
         MonitoredService savedMonitoredService = monitoredServiceRepository.save(monitoredService);
         MonitoredServiceResponse response = monitoredServiceMapper.toResponse(savedMonitoredService);
@@ -101,7 +103,7 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     public MonitoredServiceResponse disableMonitoredService(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
-                                            .orElseThrow(()-> new RuntimeException("Monitored service not found"));
+                                            .orElseThrow(()-> new NotFoundException("Monitored service not found"));
         monitoredService.setEnabled(false);
         MonitoredService savedMonitoredService = monitoredServiceRepository.save(monitoredService);
         MonitoredServiceResponse response = monitoredServiceMapper.toResponse(savedMonitoredService);
@@ -114,10 +116,24 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
     public void deleteMonitoredService(Long id) {
         if(id == null) throw new IllegalArgumentException("Id cannot be null");
         MonitoredService monitoredService = monitoredServiceRepository.findById(id)
-                                            .orElseThrow(()-> new RuntimeException("Monitored service not found"));
+                                            .orElseThrow(()-> new NotFoundException("Monitored service not found"));
         if (monitoredService.getCheckLogs() != null && !monitoredService.getCheckLogs().isEmpty()) 
-            throw new RuntimeException("Monitored service cannot be deleted because it has check logs");
+            throw new IllegalStateException("Monitored service cannot be deleted because it has check logs");
 
         monitoredServiceRepository.delete(monitoredService);
+    }
+
+    @Override
+    public List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId) {
+        if(agentId == null) throw new IllegalArgumentException("Agent id cannot be null");
+
+        Agent agent = agentRepository.findById(agentId)
+                .orElseThrow(() -> new NotFoundException("Agent not found"));
+        if(!agent.isEnabled()) throw new IllegalStateException("Agent is disabled");
+
+        List<MonitoredService> monitoredServices = monitoredServiceRepository.findByAgent_IdAndEnabledTrue(agentId);
+        return monitoredServices.stream()
+                .map(monitoredServiceMapper::toResponse)
+                .toList();
     }
 }

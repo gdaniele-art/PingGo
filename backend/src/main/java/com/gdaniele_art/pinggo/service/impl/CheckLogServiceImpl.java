@@ -4,6 +4,7 @@ import com.gdaniele_art.pinggo.dto.CheckLogResponse;
 import com.gdaniele_art.pinggo.dto.CheckResultRequest;
 import com.gdaniele_art.pinggo.entity.CheckLog;
 import com.gdaniele_art.pinggo.entity.MonitoredService;
+import com.gdaniele_art.pinggo.exception.NotFoundException;
 import com.gdaniele_art.pinggo.mapper.CheckLogMapper;
 import com.gdaniele_art.pinggo.repository.CheckLogRepository;
 import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
@@ -38,7 +39,7 @@ public class CheckLogServiceImpl implements CheckLogService{
         if(serviceKey == null || serviceKey.isBlank()) throw new IllegalArgumentException("ServiceKey cannot be null");
         
         MonitoredService monitoredService = monitoredServiceRepository.findByServiceKeyAndAgentId(serviceKey, agentId)
-            .orElseThrow(() -> new IllegalArgumentException("Monitored service not found"));
+            .orElseThrow(() -> new NotFoundException("Monitored service not found"));
         
         CheckLog checkLog = checkLogMapper.toEntity(request, monitoredService);
 
@@ -51,11 +52,10 @@ public class CheckLogServiceImpl implements CheckLogService{
 
     @Override
     public CheckLogResponse getLastLogByServiceKey(String serviceKey) {
-        if(serviceKey == null || serviceKey.isBlank()) 
-        throw new IllegalArgumentException("ServiceKey cannot be null");
+        if(serviceKey == null || serviceKey.isBlank()) throw new IllegalArgumentException("ServiceKey cannot be null");
 
         CheckLog checkLog = checkLogRepository.findTopByMonitoredService_ServiceKeyOrderByCheckedAtDesc(serviceKey)
-            .orElseThrow(() -> new IllegalArgumentException("Check log not found"));
+            .orElseThrow(() -> new NotFoundException("Check log not found"));
         
         return checkLogMapper.toResponse(checkLog);
     }
@@ -65,7 +65,7 @@ public class CheckLogServiceImpl implements CheckLogService{
         if(monitoredServiceId == null) throw new IllegalArgumentException("MonitoredServiceId cannot be null");
 
         CheckLog checkLog = checkLogRepository.findTopByMonitoredService_IdOrderByCheckedAtDesc(monitoredServiceId)
-            .orElseThrow(() -> new IllegalArgumentException("Check log not found"));
+            .orElseThrow(() -> new NotFoundException("Check log not found"));
         
         return checkLogMapper.toResponse(checkLog);
     }

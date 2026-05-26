@@ -2,6 +2,7 @@ package com.gdaniele_art.pinggo.service.impl;
 
 import java.util.List;
 
+import com.gdaniele_art.pinggo.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +27,11 @@ public class AgentServiceImpl implements AgentService {
     @Transactional
 
     public AgentResponse createAgent(CreateAgentRequest request){
-        if(request == null) throw new RuntimeException("agent does not exist");
+        if(request == null) throw new NotFoundException("agent does not exist");
 
         Agent agent = agentMapper.toEntity(request);
 
-        if(agent == null) throw new RuntimeException("Agent invalid");
+        if(agent == null) throw new NotFoundException("agent not found");
         Agent savedAgent = agentRepository.save(agent);
 
         return agentMapper.toResponse(savedAgent);
@@ -48,11 +49,11 @@ public class AgentServiceImpl implements AgentService {
 
     @Override
     public AgentResponse getAgentById(Long id){
-        if(id == null) throw new RuntimeException("Agent id cannot be null");
+        if(id == null) throw new IllegalArgumentException("Agent id cannot be null");
 
 
         Agent agent = agentRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Agent not found")); //I need a Exception more specific
+                    .orElseThrow(() -> new NotFoundException("Agent not found")); //I need a Exception more specific
 
         AgentResponse response = agentMapper.toResponse(agent);
 
@@ -63,11 +64,11 @@ public class AgentServiceImpl implements AgentService {
     @Transactional
 
     public AgentResponse enableAgent(Long id){
-        if(id == null) throw new RuntimeException("Agent id cannot be null");
+        if(id == null) throw new IllegalArgumentException("Agent id cannot be null");
 
 
         Agent agent = agentRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new NotFoundException("Agent not found"));
         
         agent.setEnabled(true);
         
@@ -82,10 +83,10 @@ public class AgentServiceImpl implements AgentService {
     @Transactional
 
     public AgentResponse disableAgent(Long id){
-        if(id == null) throw new RuntimeException("Agent id cannot be null");
+        if(id == null) throw new IllegalArgumentException("Agent id cannot be null");
 
         Agent agent = agentRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new NotFoundException( "Agent not found"));
         
         agent.setEnabled(false);
         
@@ -100,14 +101,14 @@ public class AgentServiceImpl implements AgentService {
     @Transactional
 
     public void deleteAgent(Long id){
-        if(id == null) throw new RuntimeException("Agent id cannot be null");
+        if(id == null) throw new IllegalArgumentException("Agent id cannot be null");
 
 
         Agent agent = agentRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Agent not found"));
+                    .orElseThrow(() -> new NotFoundException("Agent not found"));
         
         if(agent.getMonitoredServices() != null && !agent.getMonitoredServices().isEmpty()){
-        throw new RuntimeException("Agent cannot be deleted because it has one or more services");
+        throw new IllegalArgumentException("Agent cannot be deleted because it has one or more services");
         }
 
         agentRepository.deleteById(id);

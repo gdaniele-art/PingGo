@@ -3,6 +3,7 @@ package com.gdaniele_art.pinggo.controller;
 import java.net.URI;
 import java.util.List;
 
+import com.gdaniele_art.pinggo.service.MonitoredServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gdaniele_art.pinggo.dto.AgentResponse;
 import com.gdaniele_art.pinggo.dto.CreateAgentRequest;
 import com.gdaniele_art.pinggo.service.AgentService;
+import com.gdaniele_art.pinggo.dto.MonitoredServiceResponse;
 
 import jakarta.validation.Valid;
 
@@ -26,6 +28,9 @@ public class AgentController {
  
     @Autowired
     private AgentService agentService;
+
+    @Autowired
+    private MonitoredServiceService monitoredServiceService;
 
     @PostMapping
     public ResponseEntity<AgentResponse> createAgent(@Valid @RequestBody CreateAgentRequest request){
@@ -63,6 +68,10 @@ public class AgentController {
     public ResponseEntity<Void> deleteAgent(@PathVariable Long id){
         agentService.deleteAgent(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{id}/services")
+    public ResponseEntity<List<MonitoredServiceResponse>> getAgentServices(@PathVariable Long id){
+        return ResponseEntity.ok(monitoredServiceService.getMonitoredServicesByAgentId(id));
     }
 
  

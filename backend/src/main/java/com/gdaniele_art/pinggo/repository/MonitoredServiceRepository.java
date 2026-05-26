@@ -1,5 +1,6 @@
 package com.gdaniele_art.pinggo.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,7 @@ public interface MonitoredServiceRepository extends JpaRepository<MonitoredServi
     Optional<MonitoredService> findByServiceKey(String serviceKey);
 
     Optional<MonitoredService> findByServiceKeyAndAgentId(String serviceKey, Long agentId);
+
+    List<MonitoredService> findByAgent_IdAndEnabledTrue(Long agentId);
     
 }
