@@ -20,8 +20,7 @@ func FetchServices(apiURL string, agentID int) ([]model.Service, error) {
 	}
 
 	baseURL := strings.TrimRight(apiURL, "/")
-	endpointURL := fmt.Sprintf("%s/services/%d", baseURL, agentID)
-
+	endpointURL := fmt.Sprintf("%s/api/agents/%d/services/enabled", baseURL, agentID)
 	client := http.Client{
 		Timeout: 10 * time.Second,
 	}

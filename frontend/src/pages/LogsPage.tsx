@@ -89,77 +89,81 @@ export function LogsPage() {
                 </div>
             </header>
 
-            <section className="page-toolbar-logs">
-                <select
-                    className="status-filter"
-                    value={mode}
-                    onChange={(event) => setMode(event.target.value as LogMode)}>
-                    <option value="RECENT">Latest 50 logs</option>
-                    <option value="SERVICE_KEY_HISTORY">Service history by key</option>
-                    <option value="SERVICE_ID_HISTORY">Service history by ID</option>
-                    <option value="AGENT_ERRORS">Agent errors</option>
-                </select>
+            <section className="logs-control-panel">
+                <div className="logs-control-row">
+                    <select
+                        className="status-filter"
+                        value={mode}
+                        onChange={(event) => setMode(event.target.value as LogMode)}>
+                        <option value="RECENT">Latest 50 logs</option>
+                        <option value="SERVICE_KEY_HISTORY">Service history by key</option>
+                        <option value="SERVICE_ID_HISTORY">Service history by ID</option>
+                        <option value="AGENT_ERRORS">Agent errors</option>
+                    </select>
 
-                {mode === "SERVICE_KEY_HISTORY" && (
+                    {mode === "SERVICE_KEY_HISTORY" && (
+                        <input
+                            className="search-input compact-input"
+                            type="text"
+                            placeholder="Service key"
+                            value={serviceKey}
+                            onChange={(event) => setServiceKey(event.target.value)}
+                        />
+                    )}
+
+                    {mode === "SERVICE_ID_HISTORY" && (
+                        <input
+                            className="search-input compact-input"
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Service ID"
+                            value={monitoredServiceId}
+                            onChange={(event) => setMonitoredServiceId(event.target.value)}
+                        />
+                    )}
+
+                    {mode === "AGENT_ERRORS" && (
+                        <input
+                            className="search-input compact-input"
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="Agent ID"
+                            value={agentId}
+                            onChange={(event) => setAgentId(event.target.value)}
+                        />
+                    )}
+
+                    <button
+                        className="primary-button"
+                        type="button"
+                        onClick={handleLoadLogs}>
+                        Load Logs
+                    </button>
+                </div>
+
+                <div className="logs-control-row">
                     <input
-                        className="search-input"
+                        className="search-input logs-search-input"
                         type="text"
-                        placeholder="service key..."
-                        value={serviceKey}
-                        onChange={(event) => setServiceKey(event.target.value)}
+                        placeholder="Search loaded logs..."
+                        value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
                     />
-                )}
 
-                {mode === "SERVICE_ID_HISTORY" && (
-                    <input
-                        className="search-input"
-                        type="number"
-                        placeholder="service id..."
-                        value={monitoredServiceId}
-                        onChange={(event) => setMonitoredServiceId(event.target.value)}
-                    />
-                )}
+                    <select
+                        className="status-filter"
+                        value={statusFilter}
+                        onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}>
+                        <option value="ALL">All statuses</option>
+                        <option value="UP">UP</option>
+                        <option value="DOWN">DOWN</option>
+                        <option value="UNKNOWN">UNKNOWN</option>
+                    </select>
 
-                {mode === "AGENT_ERRORS" && (
-                    <input
-                        className="search-input"
-                        type="number"
-                        placeholder="agent id..."
-                        value={agentId}
-                        onChange={(event) => setAgentId(event.target.value)}
-                    />
-                )}
-
-                <button
-                    className="primary-button"
-                    type="button"
-                    onClick={handleLoadLogs}>
-                    Load Logs
-                </button>
-            </section>
-
-            <section className="page-toolbar-logs">
-                <input
-                    className="search-input"
-                    type="text"
-                    placeholder="Search by service, key, status, HTTP code, latency or error..."
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                />
-
-                <select
-                    className="status-filter"
-                    value={statusFilter}
-                    onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}>
-                    <option value="ALL">All statuses</option>
-                    <option value="UP">UP</option>
-                    <option value="DOWN">DOWN</option>
-                    <option value="UNKNOWN">UNKNOWN</option>
-                </select>
-
-                <span className="results-count">
-                    {filteredLogs.length} result{filteredLogs.length === 1 ? "" : "s"}
-                </span>
+                    <span className="results-count">
+                        {filteredLogs.length} result{filteredLogs.length === 1 ? "" : "s"}
+                    </span>
+                </div>
             </section>
 
             <section className="logs-table-section">
@@ -181,7 +185,9 @@ export function LogsPage() {
                     {filteredLogs.map((log) => (
                         <tr key={log.id}>
                             <td>
-                                <Link to={`/services/${log.serviceKey}`}>
+                                <Link
+                                    className="table-link"
+                                    to={`/services/${encodeURIComponent(log.serviceKey)}`}>
                                     {log.serviceName}
                                 </Link>
                             </td>
@@ -203,4 +209,5 @@ export function LogsPage() {
             </section>
         </main>
     );
+
 }

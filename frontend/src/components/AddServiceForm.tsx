@@ -1,6 +1,7 @@
-import { useState, type ChangeEvent, type FormEventHandler } from "react";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import type { CreateMonitoredServiceRequest } from "../apis/servicesApi.ts";
 import type { CheckMethod } from "../types/dashboard.ts";
+import { useAgents } from "../hooks/useAgents.ts";
 
 export type AddServiceFormState = {
     serviceKey: string;
@@ -23,61 +24,46 @@ export function AddServiceForm({ addService }: AddServiceFormProps) {
         agentId: "",
     });
 
-    const [errors, setErrors] = useState<
-        Partial<Record<keyof AddServiceFormState, string>>
-    >({});
+    const [errors, setErrors] = useState<Partial<Record<keyof AddServiceFormState, string>>>({});
 
-    const [creating, setCreating] = useState(false);
+    const {
+        data: agents,
+        loading: agentsLoading,
+        error: agentsError,
+    } = useAgents();
 
     function validateForm(): Partial<Record<keyof AddServiceFormState, string>> {
-        const newErrors: Partial<Record<keyof AddServiceFormState, string>> = {};
+        const validationErrors: Partial<Record<keyof AddServiceFormState, string>> = {};
 
-        const normalizedServiceKey = formData.serviceKey.trim();
-        const normalizedName = formData.name.trim();
-        const normalizedUrl = formData.url.trim();
-        const normalizedAgentId = formData.agentId.trim();
-
-        if (normalizedServiceKey === "") {
-            newErrors.serviceKey = "Service key is required";
+        if (formData.serviceKey.trim() === "") {
+            validationErrors.serviceKey = "Service key is required";
         }
 
-        if (normalizedName === "") {
-            newErrors.name = "Name is required";
+        if (formData.name.trim() === "") {
+            validationErrors.name = "Name is required";
         }
 
-        if (normalizedUrl === "") {
-            newErrors.url = "URL is required";
-        } else if (
-            formData.checkMethod === "HTTP_GET" &&
-            !normalizedUrl.startsWith("http://") &&
-            !normalizedUrl.startsWith("https://")
-        ) {
-            newErrors.url = "URL must start with http:// or https://";
+        if (formData.url.trim() === "") {
+            validationErrors.url = "URL is required";
         }
 
-        const agentId = Number(normalizedAgentId);
-
-        if (normalizedAgentId === "") {
-            newErrors.agentId = "Agent ID is required";
-        } else if (Number.isNaN(agentId) || agentId <= 0) {
-            newErrors.agentId = "Agent ID must be a positive number";
+        if (formData.agentId.trim() === "") {
+            validationErrors.agentId = "Agent is required";
         }
 
-        return newErrors;
+        return validationErrors;
     }
 
-    const handleChange = (
-        event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) => {
+    function handleChange(event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
         const { name, value } = event.target;
 
-        setFormData((prevData) => ({
-            ...prevData,
+        setFormData((currentData) => ({
+            ...currentData,
             [name]: value,
         }));
-    };
+    }
 
-    const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const validationErrors = validateForm();
@@ -87,90 +73,104 @@ export function AddServiceForm({ addService }: AddServiceFormProps) {
             return;
         }
 
-        const payload: CreateMonitoredServiceRequest = {
+        setErrors({});
+
+        await addService({
             serviceKey: formData.serviceKey.trim(),
             name: formData.name.trim(),
             url: formData.url.trim(),
             checkMethod: formData.checkMethod,
             agentId: Number(formData.agentId),
-        };
+        });
 
-        try {
-            setCreating(true);
-            setErrors({});
-
-            await addService(payload);
-
-            setFormData({
-                serviceKey: "",
-                name: "",
-                url: "",
-                checkMethod: "HTTP_GET",
-                agentId: "",
-            });
-        } finally {
-            setCreating(false);
-        }
-    };
+        setFormData({
+            serviceKey: "",
+            name: "",
+            url: "",
+            checkMethod: "HTTP_GET",
+            agentId: "",
+        });
+    }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                name="serviceKey"
-                value={formData.serviceKey}
-                onChange={handleChange}
-                placeholder="Service Key"
-            />
-            {errors.serviceKey && (
-                <p className="form-error">{errors.serviceKey}</p>
-            )}
+        <form className="AddServiceForm" onSubmit={handleSubmit}>
+            <div>
+                <label htmlFor="serviceKey">Service Key</label>
+                <input
+                    id="serviceKey"
+                    name="serviceKey"
+                    type="text"
+                    value={formData.serviceKey}
+                    onChange={handleChange}
+                    placeholder="auth-api"
+                />
+                {errors.serviceKey && <p className="form-error">{errors.serviceKey}</p>}
+            </div>
 
-            <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Name"
-            />
-            {errors.name && (
-                <p className="form-error">{errors.name}</p>
-            )}
+            <div>
+                <label htmlFor="name">Name</label>
+                <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={handleChange}
+                    placeholder="Auth API"
+                />
+                {errors.name && <p className="form-error">{errors.name}</p>}
+            </div>
 
-            <input
-                type="text"
-                name="url"
-                value={formData.url}
-                onChange={handleChange}
-                placeholder="URL"
-            />
-            {errors.url && (
-                <p className="form-error">{errors.url}</p>
-            )}
+            <div>
+                <label htmlFor="url">URL</label>
+                <input
+                    id="url"
+                    name="url"
+                    type="text"
+                    value={formData.url}
+                    onChange={handleChange}
+                    placeholder="http://localhost:8080/api/agents"
+                />
+                {errors.url && <p className="form-error">{errors.url}</p>}
+            </div>
 
-            <select
-                name="checkMethod"
-                value={formData.checkMethod}
-                onChange={handleChange}
-            >
-                <option value="HTTP_GET">HTTP GET</option>
-                <option value="TCP">TCP</option>
-                <option value="PING">PING</option>
-            </select>
+            <div>
+                <label htmlFor="checkMethod">Check Method</label>
+                <select
+                    id="checkMethod"
+                    name="checkMethod"
+                    value={formData.checkMethod}
+                    onChange={handleChange}
+                >
+                    <option value="HTTP_GET">HTTP_GET</option>
+                    <option value="TCP">TCP</option>
+                </select>
+            </div>
 
-            <input
-                type="number"
-                name="agentId"
-                value={formData.agentId}
-                onChange={handleChange}
-                placeholder="Agent ID"
-            />
-            {errors.agentId && (
-                <p className="form-error">{errors.agentId}</p>
-            )}
+            <div>
+                <label htmlFor="agentId">Agent</label>
+                <select
+                    id="agentId"
+                    name="agentId"
+                    value={formData.agentId}
+                    onChange={handleChange}
+                    disabled={agentsLoading || agents.length === 0}
+                >
+                    <option value="" disabled>
+                        {agentsLoading ? "Loading agents..." : "Select an agent"}
+                    </option>
 
-            <button type="submit" disabled={creating}>
-                {creating ? "Saving..." : "Save Service"}
+                    {agents.map((agent) => (
+                        <option key={agent.id} value={agent.id}>
+                            {agent.name} #{agent.id}
+                        </option>
+                    ))}
+                </select>
+                {errors.agentId && <p className="form-error">{errors.agentId}</p>}
+                {agentsError && <p className="form-error">{agentsError}</p>}
+            </div>
+
+            <button type="submit" disabled={agentsLoading || agents.length === 0}>
+                Create Service
             </button>
         </form>
     );
