@@ -76,7 +76,8 @@ export function ServiceDetailPage() {
                 <article className="summary-card">
                     <h2>Agent</h2>
                     <p>
-                        <Link to={`/agents/${service.agentId}`}>
+                        <Link className="table-link"
+                            to={`/agents/${service.agentId}`}>
                             {service.agentName}
                         </Link>
                     </p>

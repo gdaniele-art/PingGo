@@ -32,7 +32,7 @@ export async function createService(payload: CreateMonitoredServiceRequest):Prom
     return resp.json();
 }
 export async function getServiceByServiceKey(serviceKey: string): Promise<MonitoredServiceResponse> {
-    const response = await fetch(`/api/services/service-key/${serviceKey}`);
+    const response = await fetch(`/api/services/key/${encodeURIComponent(serviceKey)}`);
 
     if (!response.ok) {
         throw new Error("Failed to fetch service");

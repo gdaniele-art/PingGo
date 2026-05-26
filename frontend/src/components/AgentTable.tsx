@@ -1,5 +1,6 @@
 import type { AgentResponse, MonitoredServiceResponse } from "../types/dashboard.ts";
 import { StatusBadge } from "./StatusBadge.tsx";
+import { Link } from "react-router-dom";
 
 type AgentTableProps = {
     agents: AgentResponse[];
@@ -34,11 +35,20 @@ export function AgentTable({ agents, services }: AgentTableProps) {
 
                     return (
                         <tr key={agent.id}>
-                            <td>{agent.name}</td>
+                            <td>
+                                <Link
+                                    className="table-link"
+                                    to={`/agents/${agent.id}`}>
+                                    {agent.name}
+                                </Link>
+                            </td>
+
                             <td>{agent.description}</td>
+
                             <td>
                                 <StatusBadge value={agent.enabled} />
                             </td>
+
                             <td>{agentServices.length}</td>
                             <td>{serviceNames || "-"}</td>
                         </tr>

@@ -26,14 +26,26 @@ export function ServicesTable({ services }: ServicesTableProps) {
                 <tbody>
                 {services.map((service) => (
                     <tr key={service.id}>
-                        <td><Link to={`/services/${service.serviceKey}`}>
-                            {service.name}
-                        </Link>
+                        <td>
+                            <Link
+                                className="table-link"
+                                to={`/services/${encodeURIComponent(service.serviceKey)}`}>
+                                {service.name}
+                            </Link>
                         </td>
+
                         <td>{service.serviceKey}</td>
                         <td>{service.url}</td>
                         <td>{service.checkMethod}</td>
-                        <td>{service.agentName}</td>
+
+                        <td>
+                            <Link
+                                className="table-link"
+                                to={`/agents/${service.agentId}`}>
+                                {service.agentName}
+                            </Link>
+                        </td>
+
                         <td>
                             <StatusBadge value={service.enabled} />
                         </td>
