@@ -100,3 +100,5 @@ PingGo is built with a backend, an agent, and a frontend dashboard.
 
 
 ## Getting Started
+
+# WORK IN PROGRESS!!!
