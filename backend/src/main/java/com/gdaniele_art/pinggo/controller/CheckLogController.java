@@ -43,8 +43,4 @@ public class CheckLogController {
         return ResponseEntity.ok(checkLogService.getRecentLogsByMonitoredServiceId(monitoredServiceId));
     }
 
-    @GetMapping("/agent/{agentId}/errors")
-    public ResponseEntity<List<CheckLogResponse>> getErrorLogsByAgentId(@PathVariable Long agentId){
-        return ResponseEntity.ok(checkLogService.getErrorLogsByAgentId(agentId));
-    }
 }

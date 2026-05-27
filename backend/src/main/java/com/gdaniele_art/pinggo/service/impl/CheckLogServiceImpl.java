@@ -11,9 +11,11 @@ import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
 import com.gdaniele_art.pinggo.service.CheckLogService;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gdaniele_art.pinggo.notification.MonitoringAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gdaniele_art.pinggo.notification.EmailNotificationService;
 
 import java.util.List;
 
@@ -21,10 +23,16 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class CheckLogServiceImpl implements CheckLogService{
     @Autowired
+    private EmailNotificationService emailNotificationService;
+
+    @Autowired
     private CheckLogRepository checkLogRepository;
 
     @Autowired
     private CheckLogMapper checkLogMapper;
+
+    @Autowired
+    private MonitoringAlertService monitoringAlertService;
 
     @Autowired
     private MonitoredServiceRepository monitoredServiceRepository;
@@ -41,12 +49,15 @@ public class CheckLogServiceImpl implements CheckLogService{
         
         MonitoredService monitoredService = monitoredServiceRepository.findByServiceKeyAndAgentId(serviceKey, agentId)
             .orElseThrow(() -> new NotFoundException("Monitored service not found"));
-        
+
+        CheckLog previousLog = checkLogRepository.findTopByMonitoredService_IdOrderByCheckedAtDesc(monitoredService.getId()).orElse(null);
         CheckLog checkLog = checkLogMapper.toEntity(request, monitoredService);
 
         if (checkLog == null) throw new IllegalArgumentException("Checklog cannot be null");
 
         checkLog = checkLogRepository.save(checkLog);
+
+        monitoringAlertService.handleCheckResultTransition(previousLog, checkLog);
 
         return checkLogMapper.toResponse(checkLog);
     }

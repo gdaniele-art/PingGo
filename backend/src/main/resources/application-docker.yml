@@ -17,4 +17,26 @@ spring:
   sql:
     init:
       mode: never
+  mail:
+    host: ${SPRING_MAIL_HOST:smtp.gmail.com}
+    port: ${SPRING_MAIL_PORT:587}
+    username: ${SPRING_MAIL_USERNAME:}
+    password: ${SPRING_MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
+alerts:
+  enabled: ${ALERTS_ENABLED:false}
+
+  mail:
+    enabled: ${ALERTS_MAIL_ENABLED:false}
+    to: ${ALERTS_MAIL_TO:}
+    from: ${ALERTS_MAIL_FROM:${SPRING_MAIL_USERNAME:}}
+
+  slack:
+    enabled: ${ALERTS_SLACK_ENABLED:false}
+    webhook-url: ${ALERTS_SLACK_WEBHOOK_URL:}
