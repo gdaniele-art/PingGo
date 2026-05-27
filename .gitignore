@@ -64,14 +64,6 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-# =========================
-# H2 local database
-# =========================
-data/
-backend/data/
-*.mv.db
-*.trace.db
-*.lock.db
 
 # =========================
 # Local config / secrets
@@ -105,13 +97,13 @@ agent/coverage.out
 go.work.sum
 
 # =========================
-# Frontend / React / Vite
+# Frontend / React / Vite / Node
 # =========================
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
 frontend/coverage/
-
+node_modules/
 # npm / pnpm / yarn logs
 npm-debug.log*
 yarn-debug.log*
@@ -127,6 +119,3 @@ volumes/
 # Local test controllers
 backend/src/main/java/**/TestController.java
 
-# Node
-frontend/node_modules/
-node_modules/

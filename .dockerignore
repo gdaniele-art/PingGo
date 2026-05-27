@@ -1,0 +1,14 @@
+.git
+.idea
+.vscode
+**/target
+**/node_modules
+**/dist
+**/.vite
+**/*.log
+.env
+.env.*
+!.env.example
+backend/data
+backend/config/configuration.yml
+agent
