@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAgent } from "../hooks/useAgent.ts";
 import { ServicesTable } from "../components/ServicesTable.tsx";
+import { UpdateAgentForm } from "../components/UpdateAgentForm.tsx";
 
 export function AgentDetailPage() {
     const { agentId } = useParams();
     const parsedAgentId = Number(agentId);
+    const [showUpdateForm, setShowUpdateForm] = useState<boolean>(false);
 
     const {
         data: agent,
@@ -14,6 +17,7 @@ export function AgentDetailPage() {
         updating,
         updateError,
         toggleAgentStatus,
+        editAgent,
     } = useAgent(parsedAgentId);
 
     if (Number.isNaN(parsedAgentId)) {
@@ -48,6 +52,14 @@ export function AgentDetailPage() {
                     <button
                         className="primary-button"
                         type="button"
+                        onClick={() => setShowUpdateForm((prev) => !prev)}
+                        disabled={updating}>
+                        {showUpdateForm ? "Cancel Edit" : "Edit Agent"}
+                    </button>
+
+                    <button
+                        className="primary-button"
+                        type="button"
                         onClick={toggleAgentStatus}
                         disabled={updating}>
                         {updating
@@ -60,6 +72,19 @@ export function AgentDetailPage() {
             </header>
 
             {updateError && <p className="form-error">{updateError}</p>}
+
+            {showUpdateForm && (
+                <section className="add-agent-section">
+                    <UpdateAgentForm
+                        agent={agent}
+                        updateAgent={async (payload) => {
+                            await editAgent(payload);
+                            setShowUpdateForm(false);
+                        }}
+                        onCancel={() => setShowUpdateForm(false)}
+                    />
+                </section>
+            )}
 
             <section className="agent-detail-summary">
                 <article className="summary-card">

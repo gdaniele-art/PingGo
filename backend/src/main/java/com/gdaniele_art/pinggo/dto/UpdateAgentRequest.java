@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 public class UpdateAgentRequest {
 
-   @NotNull(message = "Agent ID is required")
    @NotBlank(message = "Agent name is required")
     private String name;
 

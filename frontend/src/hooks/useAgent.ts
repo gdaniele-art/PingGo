@@ -1,6 +1,13 @@
 import type { AgentResponse, MonitoredServiceResponse } from "../types/dashboard.ts";
-import { useEffect, useState } from "react";
-import { disableAgent, enableAgent, getAgentById, getAgentServices } from "../apis/agentsApi.ts";
+import { useCallback, useEffect, useState } from "react";
+import {
+    disableAgent,
+    enableAgent,
+    getAgentById,
+    getAgentServices,
+    updateAgent,
+    type UpdateAgentRequest,
+} from "../apis/agentsApi.ts";
 
 export function useAgent(agentId: number) {
     const [data, setData] = useState<AgentResponse | null>(null);
@@ -10,7 +17,7 @@ export function useAgent(agentId: number) {
     const [updating, setUpdating] = useState<boolean>(false);
     const [updateError, setUpdateError] = useState<string | null>(null);
 
-    async function fetchAgent() {
+    const fetchAgent = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -29,7 +36,7 @@ export function useAgent(agentId: number) {
         } finally {
             setLoading(false);
         }
-    }
+    }, [agentId]);
 
     async function toggleAgentStatus() {
         if (!data) {
@@ -60,9 +67,50 @@ export function useAgent(agentId: number) {
         }
     }
 
-    useEffect(() => {
-        fetchAgent();
-    }, [agentId]);
+    async function editAgent(payload: UpdateAgentRequest): Promise<AgentResponse | undefined> {
+        if (!data) {
+            return;
+        }
 
-    return {data, services, loading, error, updating, updateError, toggleAgentStatus, refetch: fetchAgent,};
+        try {
+            setUpdating(true);
+            setUpdateError(null);
+
+            const updatedAgent = await updateAgent(data.id, payload);
+
+            setData(updatedAgent);
+
+            return updatedAgent;
+        } catch (err) {
+            if (err instanceof Error) {
+                setUpdateError(err.message);
+            } else {
+                setUpdateError("Unknown error occurred");
+            }
+
+            throw err;
+        } finally {
+            setUpdating(false);
+        }
+    }
+
+    useEffect(() => {
+        const getData = async () => {
+            await fetchAgent();
+        };
+
+        getData();
+    }, [fetchAgent]);
+
+    return {
+        data,
+        services,
+        loading,
+        error,
+        updating,
+        updateError,
+        toggleAgentStatus,
+        editAgent,
+        refetch: fetchAgent,
+    };
 }

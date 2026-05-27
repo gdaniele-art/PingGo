@@ -3,7 +3,9 @@ import {
     disableService,
     enableService,
     getServiceByServiceKey,
-    getServiceRecentLogs
+    getServiceRecentLogs,
+    updateService,
+    type UpdateMonitoredServiceRequest,
 } from "../apis/servicesApi.ts";
 import type {CheckLogResponse, MonitoredServiceResponse} from "../types/dashboard.ts";
 
@@ -13,6 +15,7 @@ export function useService(serviceKey: string) {
     const[loading,setLoading] = useState<boolean>(true);
     const[updating,setUpdating] = useState<boolean>(false);
     const[error,setError] = useState<string | null>(null);
+    const[updateError,setUpdateError] = useState<string | null>(null);
 
     useEffect(() => {
         const getData = async () => {
@@ -46,7 +49,7 @@ export function useService(serviceKey: string) {
 
         try{
             setUpdating(true);
-            setError(null);
+            setUpdateError(null);
 
             const updatedService = data.enabled
                 ? await disableService(data.id)
@@ -57,9 +60,9 @@ export function useService(serviceKey: string) {
             return updatedService;
         }catch (err){
             if (err instanceof Error) {
-                setError(err.message);
+                setUpdateError(err.message);
             } else {
-                setError("Unknown error occurred");
+                setUpdateError("Unknown error occurred");
             }
             throw err;
         }finally {
@@ -68,5 +71,31 @@ export function useService(serviceKey: string) {
 
     }
 
-    return { data, logs, loading, updating, error, toggleServiceStatus};
+    const editService = async(payload: UpdateMonitoredServiceRequest): Promise<MonitoredServiceResponse | undefined> => {
+        if (!data) {
+            return;
+        }
+
+        try{
+            setUpdating(true);
+            setUpdateError(null);
+
+            const updatedService = await updateService(data.id, payload);
+
+            setData(updatedService);
+
+            return updatedService;
+        }catch (err){
+            if (err instanceof Error) {
+                setUpdateError(err.message);
+            } else {
+                setUpdateError("Unknown error occurred");
+            }
+            throw err;
+        }finally {
+            setUpdating(false);
+        }
+    }
+
+    return { data, logs, loading, updating, error, updateError, toggleServiceStatus, editService};
 }

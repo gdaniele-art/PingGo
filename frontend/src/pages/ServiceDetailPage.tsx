@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useService } from "../hooks/useService.ts";
 import { RecentLogs } from "../components/RecentCheckLogs.tsx";
+import { UpdateServiceForm } from "../components/UpdateServiceForm.tsx";
 
 export function ServiceDetailPage() {
     const { serviceKey } = useParams();
+    const [showUpdateForm, setShowUpdateForm] = useState<boolean>(false);
 
     const {
         data: service,
@@ -11,7 +14,9 @@ export function ServiceDetailPage() {
         loading,
         updating,
         error,
+        updateError,
         toggleServiceStatus,
+        editService,
     } = useService(serviceKey ?? "");
 
     if (!serviceKey) {
@@ -46,6 +51,14 @@ export function ServiceDetailPage() {
                     <button
                         className="primary-button"
                         type="button"
+                        onClick={() => setShowUpdateForm((prev) => !prev)}
+                        disabled={updating}>
+                        {showUpdateForm ? "Cancel Edit" : "Edit Service"}
+                    </button>
+
+                    <button
+                        className="primary-button"
+                        type="button"
                         onClick={toggleServiceStatus}
                         disabled={updating}>
                         {updating
@@ -56,6 +69,21 @@ export function ServiceDetailPage() {
                     </button>
                 </div>
             </header>
+
+            {updateError && <p className="form-error">{updateError}</p>}
+
+            {showUpdateForm && (
+                <section className="add-service-section">
+                    <UpdateServiceForm
+                        service={service}
+                        updateService={async (payload) => {
+                            await editService(payload);
+                            setShowUpdateForm(false);
+                        }}
+                        onCancel={() => setShowUpdateForm(false)}
+                    />
+                </section>
+            )}
 
             <section className="service-detail-summary">
                 <article className="summary-card">
