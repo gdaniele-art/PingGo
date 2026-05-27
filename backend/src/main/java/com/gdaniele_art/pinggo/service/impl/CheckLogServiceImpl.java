@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.gdaniele_art.pinggo.alert.AlertService;
+
 
 import java.util.List;
 
@@ -28,9 +28,6 @@ public class CheckLogServiceImpl implements CheckLogService{
 
     @Autowired
     private MonitoredServiceRepository monitoredServiceRepository;
-
-    @Autowired
-    private AlertService alertService;
 
     @Override
     @Transactional
@@ -49,13 +46,8 @@ public class CheckLogServiceImpl implements CheckLogService{
 
         if (checkLog == null) throw new IllegalArgumentException("Checklog cannot be null");
 
-        CheckLog previousLog = checkLogRepository.findTopByMonitoredService_IdOrderByCheckedAtDesc(monitoredService.getId())
-        .orElse(null);
-
         checkLog = checkLogRepository.save(checkLog);
 
-        alertService.handleCheckResultTransition(previousLog, checkLog);
-        
         return checkLogMapper.toResponse(checkLog);
     }
 

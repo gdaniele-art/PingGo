@@ -18,6 +18,3 @@ spring:
     init:
       mode: never
 
-alerts:
-  enabled: ${ALERTS_ENABLED:false}
-  n8n-webhook-url: ${ALERTS_N8N_WEBHOOK_URL:}

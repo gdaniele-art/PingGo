@@ -9,7 +9,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-pinggo}
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pinggo} -d ${POSTGRES_DB:-pinggo}"]
       interval: 10s
@@ -25,15 +24,11 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      n8n:
-        condition: service_started
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-pinggo}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-pinggo}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-pinggo_dev_password}
-      ALERTS_ENABLED: ${ALERTS_ENABLED:-true}
-      ALERTS_N8N_WEBHOOK_URL: ${ALERTS_N8N_WEBHOOK_URL:-http://n8n:5678/webhook/pinggo-alerts}
     ports:
       - "8080:8080"
 
@@ -48,33 +43,7 @@ services:
     ports:
       - "3000:80"
 
-  n8n:
-    image: n8nio/n8n:latest
-    container_name: pinggo-n8n
-    restart: unless-stopped
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      DB_TYPE: postgresdb
-      DB_POSTGRESDB_HOST: postgres
-      DB_POSTGRESDB_PORT: 5432
-      DB_POSTGRESDB_DATABASE: n8n
-      DB_POSTGRESDB_USER: ${POSTGRES_USER:-pinggo}
-      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD:-pinggo_dev_password}
-      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:-change-me-change-me-change-me-123456}
-      N8N_SECURE_COOKIE: false
-      N8N_HOST: localhost
-      N8N_PORT: 5678
-      N8N_PROTOCOL: http
-      WEBHOOK_URL: http://localhost:5678/
-      GENERIC_TIMEZONE: America/Argentina/Buenos_Aires
-      TZ: America/Argentina/Buenos_Aires
-    ports:
-      - "5678:5678"
-    volumes:
-      - n8n-data:/home/node/.n8n
 
 volumes:
   postgres-data:
-  n8n-data:
+
