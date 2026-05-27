@@ -15,6 +15,7 @@ import com.gdaniele_art.pinggo.repository.MonitoredServiceRepository;
 import com.gdaniele_art.pinggo.service.MonitoredServiceService;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import com.gdaniele_art.pinggo.dto.UpdateMonitoredServiceRequest;
 
 @Service
 @Transactional(readOnly = true)
@@ -148,5 +149,37 @@ public class MonitoredServiceServiceImpl implements MonitoredServiceService{
                 .stream()
                 .map(monitoredServiceMapper::toResponse)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public MonitoredServiceResponse updateMonitoredService(Long id, UpdateMonitoredServiceRequest request) {
+        if (id == null) {
+            throw new IllegalArgumentException("Service id cannot be null");
+        }
+
+        MonitoredService service = monitoredServiceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Monitored service not found"));
+
+        if (request.getName() == null || request.getName().isBlank()) {
+            throw new IllegalArgumentException("Service name cannot be empty");
+        }
+        if (request.getUrl() == null || request.getUrl().isBlank()) {
+            throw new IllegalArgumentException("Service URL cannot be empty");
+        }
+        if (request.getCheckMethod() == null) {
+            throw new IllegalArgumentException("Check method cannot be null");
+        }
+        if (request.getAgentId() == null) {
+            throw new IllegalArgumentException("Agent id cannot be null");
+        }
+        Agent agent = agentRepository.findById(request.getAgentId()).orElseThrow(() -> new NotFoundException("Agent not found"));
+
+        service.setName(request.getName().trim());
+        service.setUrl(request.getUrl().trim());
+        service.setCheckMethod(request.getCheckMethod());
+        service.setAgent(agent);
+
+        return monitoredServiceMapper.toResponse(service);
     }
 }

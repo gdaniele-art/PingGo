@@ -8,6 +8,12 @@ export type CreateMonitoredServiceRequest = {
     checkMethod: CheckMethod;
     agentId: number;
 };
+export type UpdateMonitoredServiceRequest = {
+    name: string;
+    url: string;
+    checkMethod: CheckMethod;
+    agentId: number;
+};
 
 export async function getAllServices():Promise<MonitoredServiceResponse[]> {
     const resp: Response  = await fetch("/api/services");
@@ -71,5 +77,24 @@ export async function disableService(serviceId: number): Promise<MonitoredServic
     if (!response.ok) {
         throw new Error("Failed to disable service");
     }
+    return response.json();
+}
+
+export async function updateService(
+    serviceId: number,
+    payload: UpdateMonitoredServiceRequest
+): Promise<MonitoredServiceResponse> {
+    const response = await fetch(`/api/services/${serviceId}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to update service");
+    }
+
     return response.json();
 }

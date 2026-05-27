@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.gdaniele_art.pinggo.dto.CreateMonitoredServiceRequest;
 import com.gdaniele_art.pinggo.dto.MonitoredServiceResponse;
+import com.gdaniele_art.pinggo.dto.UpdateMonitoredServiceRequest;
 
 public interface MonitoredServiceService {
 
@@ -24,4 +25,6 @@ public interface MonitoredServiceService {
     List<MonitoredServiceResponse> getMonitoredServicesByAgentId(Long agentId);
 
     List<MonitoredServiceResponse> getEnabledMonitoredServicesByAgentId(Long agentId);
+
+    MonitoredServiceResponse updateMonitoredService(Long id, UpdateMonitoredServiceRequest request);
 }

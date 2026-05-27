@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.gdaniele_art.pinggo.dto.AgentResponse;
 import com.gdaniele_art.pinggo.dto.CreateAgentRequest;
+import com.gdaniele_art.pinggo.dto.UpdateAgentRequest;
 
 public interface AgentService {
 
@@ -19,5 +20,5 @@ public interface AgentService {
     
     void deleteAgent(Long id);
 
-    
+    AgentResponse updateAgent(Long id, UpdateAgentRequest request);
 }
