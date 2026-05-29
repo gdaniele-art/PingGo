@@ -4,9 +4,11 @@ import java.time.Instant;
 import java.util.UUID;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Entity
 @Table(name = "users")
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
