@@ -1,32 +1,28 @@
 package com.gdaniele_art.pinggo.entity;
 
 import java.time.Instant;
+import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; //later this need to be UIID
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     
-    @Enumerated(EnumType.STRING) // 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Role role;
 
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false, name="created_at")
+    @Column(nullable = false, name="created_at", updatable = false)
     private Instant createdAt;
+
+    private Instant updatedAt = null;
 
     @Column(nullable = false)
     private boolean enabled = true;
@@ -41,10 +37,10 @@ public class User {
         VIEWER
     }
 
-    public Long getId(){
+    public UUID getId(){
         return this.id;
     }
-    public void setId(Long id){
+    public void setId(UUID id){
         this.id = id;      
     }
     public Role getRole(){
@@ -77,13 +73,17 @@ public class User {
     public void setPassword(String password){
         this.password = password;
     }
+    public Instant getUpdatedAt(){
+        return this.updatedAt;
+    }
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
-    public User(Role role,String email
-        ,boolean enabled, String password
+    public User(Role role,String email, String password
     ){
         this.role = role;
         this.email = email;
-        this.enabled = enabled;
         this.password = password;
     }
     
@@ -98,5 +98,9 @@ public class User {
         if(this.role == null){
             this.role = Role.VIEWER;
         }
+    }
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
     }
 }
