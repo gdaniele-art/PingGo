@@ -64,9 +64,10 @@ public class AgentController {
         agentService.deleteAgent(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/{id}/services/enabled")
     public ResponseEntity<List<MonitoredServiceResponse>> getEnabledAgentServices(@PathVariable Long id){
-        return ResponseEntity.ok(monitoredServiceService.getMonitoredServicesByAgentId(id));
+        return ResponseEntity.ok(monitoredServiceService.getEnabledMonitoredServicesByAgentId(id));
     }
 
     @GetMapping("/{id}/services")

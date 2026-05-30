@@ -13,12 +13,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +32,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/agent/**").hasRole("AGENT")
+                        .requestMatchers("/api/setup/admin").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/dashboard/**").hasAnyRole("ADMIN", "VIEWER")
                         .requestMatchers(HttpMethod.GET, "/api/check-logs/**").hasAnyRole("ADMIN", "VIEWER")
                         .requestMatchers(HttpMethod.GET, "/api/services/**").hasAnyRole("ADMIN", "VIEWER")
@@ -61,7 +60,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter(JwtEncoder jwtEncoder) {
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter authoritiesConverter = new JwtGrantedAuthoritiesConverter();
 
         authoritiesConverter.setAuthoritiesClaimName("roles");

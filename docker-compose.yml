@@ -30,6 +30,8 @@ services:
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-pinggo}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-pinggo_dev_password}
 
+      JWT_SECRET: ${JWT_SECRET:-change-this-secret-change-this-secret-123456}
+
 
       ALERTS_ENABLED: ${ALERTS_ENABLED:-false}
       ALERTS_MAIL_ENABLED: ${ALERTS_MAIL_ENABLED:-false}
