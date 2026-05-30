@@ -3,6 +3,7 @@ package com.gdaniele_art.pinggo.notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
@@ -11,24 +12,35 @@ import java.util.Map;
 @Service
 public class SlackNotificationService {
     private static final Logger log = LoggerFactory.getLogger(SlackNotificationService.class);
+
     private final RestClient restClient;
+
     @Value("${alerts.slack.enabled:false}")
     private boolean slackAlertsEnabled;
+
     @Value("${alerts.slack.webhook-url:}")
     private String slackWebhookUrl;
 
     public SlackNotificationService(RestClient.Builder restClientBuilder) {
-        this.restClient = restClientBuilder.build();
+        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+        requestFactory.setConnectTimeout(3000);
+        requestFactory.setReadTimeout(5000);
+
+        this.restClient = restClientBuilder
+                .requestFactory(requestFactory)
+                .build();
     }
 
-    public void send(String message) {
+    public boolean send(String message) {
         if (!slackAlertsEnabled) {
-            return;
+            return false;
         }
+
         if (slackWebhookUrl == null || slackWebhookUrl.isBlank()) {
             log.warn("Slack alerts are enabled but alerts.slack.webhook-url is empty");
-            return;
+            return false;
         }
+
         try {
             restClient.post()
                     .uri(slackWebhookUrl)
@@ -37,9 +49,11 @@ public class SlackNotificationService {
                     .toBodilessEntity();
 
             log.info("Slack alert sent");
+            return true;
 
         } catch (Exception exception) {
             log.warn("Failed to send Slack alert. error={}", exception.getMessage());
+            return false;
         }
     }
 }

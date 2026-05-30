@@ -8,6 +8,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+
 @Service
 public class EmailNotificationService {
     private static final Logger log = LoggerFactory.getLogger(EmailNotificationService.class);
@@ -27,21 +29,23 @@ public class EmailNotificationService {
         this.mailSenderProvider = mailSenderProvider;
     }
 
-    public void send(String subject, String body) {
+    public boolean send(String subject, String body) {
         if (!mailAlertsEnabled) {
-            return;
+            return false;
         }
 
-        if (alertMailTo == null || alertMailTo.isBlank()) {
+        String[] recipients = parseRecipients(alertMailTo);
+
+        if (recipients.length == 0) {
             log.warn("Email alerts are enabled but alerts.mail.to is empty");
-            return;
+            return false;
         }
 
         JavaMailSender mailSender = mailSenderProvider.getIfAvailable();
 
         if (mailSender == null) {
             log.warn("Email alerts are enabled but JavaMailSender is not available");
-            return;
+            return false;
         }
 
         try {
@@ -51,16 +55,30 @@ public class EmailNotificationService {
                 message.setFrom(alertMailFrom);
             }
 
-            message.setTo(alertMailTo);
+            message.setTo(recipients);
             message.setSubject(subject);
             message.setText(body);
 
             mailSender.send(message);
 
-            log.info("Email alert sent to {}", alertMailTo);
+            log.info("Email alert sent to {}", String.join(", ", recipients));
+            return true;
 
         } catch (Exception exception) {
             log.warn("Failed to send email alert. error={}", exception.getMessage());
+            return false;
         }
+    }
+
+    private String[] parseRecipients(String rawRecipients) {
+        if (rawRecipients == null || rawRecipients.isBlank()) {
+            return new String[0];
+        }
+
+        return Arrays.stream(rawRecipients.split(","))
+                .map(String::trim)
+                .filter(recipient -> !recipient.isBlank())
+                .distinct()
+                .toArray(String[]::new);
     }
 }

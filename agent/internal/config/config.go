@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/gdaniele-art/pinggo/agent/internal/model"
 	"gopkg.in/yaml.v3"
@@ -22,7 +23,7 @@ func LoadConfig(path string) (model.Config, error) {
 }
 
 func ValidateConfig(cfg model.Config) error {
-	if cfg.APIUrl == "" {
+	if strings.TrimSpace(cfg.APIUrl) == "" {
 		return fmt.Errorf("apiUrl is required")
 	}
 
@@ -38,7 +39,7 @@ func ValidateConfig(cfg model.Config) error {
 		return fmt.Errorf("timeoutSeconds must be greater than 0")
 	}
 
-	if cfg.Token == "" {
+	if strings.TrimSpace(cfg.Token) == "" {
 		return fmt.Errorf("token is required")
 	}
 

@@ -5,6 +5,7 @@ import com.gdaniele_art.pinggo.entity.CheckLog.StatusService;
 import com.gdaniele_art.pinggo.entity.MonitoredService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,19 +13,11 @@ import org.springframework.stereotype.Service;
 public class MonitoringAlertService {
     private static final Logger log = LoggerFactory.getLogger(MonitoringAlertService.class);
 
-    private final EmailNotificationService emailNotificationService;
-    private final SlackNotificationService slackNotificationService;
+    @Autowired
+    private NotificationDispatcher notificationDispatcher;
 
     @Value("${alerts.enabled:false}")
     private boolean alertsEnabled;
-
-    public MonitoringAlertService(
-            EmailNotificationService emailNotificationService,
-            SlackNotificationService slackNotificationService
-    ) {
-        this.emailNotificationService = emailNotificationService;
-        this.slackNotificationService = slackNotificationService;
-    }
 
     public void handleCheckResultTransition(CheckLog previousLog, CheckLog currentLog) {
         if (!alertsEnabled) {
@@ -46,11 +39,16 @@ public class MonitoringAlertService {
         String subject = buildSubject(alertType, monitoredService);
         String emailBody = buildEmailBody(alertType, previousLog, currentLog, monitoredService);
         String slackMessage = buildSlackMessage(alertType, previousLog, currentLog, monitoredService);
+        AlertNotification notification = new AlertNotification(
+                alertType,
+                monitoredService.getServiceKey(),
+                subject,
+                emailBody,
+                slackMessage);
 
-        emailNotificationService.send(subject, emailBody);
-        slackNotificationService.send(slackMessage);
+        notificationDispatcher.dispatch(notification);
 
-        log.info("Monitoring alert processed. alertType={}, serviceKey={}",
+        log.info("Monitoring alert queued. alertType={}, serviceKey={}",
                 alertType,
                 monitoredService.getServiceKey());
     }
@@ -178,8 +176,4 @@ public class MonitoringAlertService {
         );
     }
 
-    private enum AlertType {
-        SERVICE_DOWN,
-        SERVICE_RECOVERED
-    }
 }

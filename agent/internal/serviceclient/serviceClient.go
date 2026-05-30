@@ -16,7 +16,7 @@ func FetchServices(apiURL string, token string) ([]model.Service, error) {
 		return nil, fmt.Errorf("apiURL is required")
 	}
 	if strings.TrimSpace(token) == "" {
-		return nil, fmt.Errorf("Token is required")
+		return nil, fmt.Errorf("token is required")
 	}
 
 	baseURL := strings.TrimRight(apiURL, "/")
