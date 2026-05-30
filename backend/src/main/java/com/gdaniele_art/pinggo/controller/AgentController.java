@@ -3,16 +3,13 @@ package com.gdaniele_art.pinggo.controller;
 import java.net.URI;
 import java.util.List;
 
-import com.gdaniele_art.pinggo.dto.UpdateAgentRequest;
+import com.gdaniele_art.pinggo.dto.*;
 import com.gdaniele_art.pinggo.service.MonitoredServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.gdaniele_art.pinggo.dto.AgentResponse;
-import com.gdaniele_art.pinggo.dto.CreateAgentRequest;
 import com.gdaniele_art.pinggo.service.AgentService;
-import com.gdaniele_art.pinggo.dto.MonitoredServiceResponse;
 
 import jakarta.validation.Valid;
 
@@ -78,6 +75,11 @@ public class AgentController {
     @PutMapping("/{id}")
     public ResponseEntity<AgentResponse> updateAgent(@PathVariable Long id, @Valid @RequestBody UpdateAgentRequest request) {
         return ResponseEntity.ok(agentService.updateAgent(id, request));
+    }
+
+    @PostMapping("/{id}/token")
+    public ResponseEntity<AgentTokenResponse> generateAgentToken(@PathVariable Long id) {
+        return ResponseEntity.ok(agentService.generateAgentToken(id));
     }
  
 }

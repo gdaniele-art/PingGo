@@ -38,6 +38,10 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserResponse createUser(CreateUserRequest request) {
+        User.Role role = request.getRole();
+        if (role != User.Role.VIEWER) {
+            throw new IllegalArgumentException("Admin can only create VIEWER users");
+        }
         String email = request.getEmail().trim().toLowerCase();
 
         if (userRepository.existsByEmail(email)) {

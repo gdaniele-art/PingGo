@@ -50,6 +50,14 @@ public class CheckLogServiceImpl implements CheckLogService{
         MonitoredService monitoredService = monitoredServiceRepository.findByServiceKeyAndAgentId(serviceKey, agentId)
             .orElseThrow(() -> new NotFoundException("Monitored service not found"));
 
+        if (!monitoredService.getAgent().isEnabled()) {
+            throw new IllegalStateException("Agent is disabled");
+        }
+
+        if (!monitoredService.isEnabled()) {
+            throw new IllegalStateException("Monitored service is disabled");
+        }
+
         CheckLog previousLog = checkLogRepository.findTopByMonitoredService_IdOrderByCheckedAtDesc(monitoredService.getId()).orElse(null);
         CheckLog checkLog = checkLogMapper.toEntity(request, monitoredService);
 

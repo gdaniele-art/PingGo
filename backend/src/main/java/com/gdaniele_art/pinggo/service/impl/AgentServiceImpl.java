@@ -2,8 +2,10 @@ package com.gdaniele_art.pinggo.service.impl;
 
 import java.util.List;
 
+import com.gdaniele_art.pinggo.dto.AgentTokenResponse;
 import com.gdaniele_art.pinggo.dto.UpdateAgentRequest;
 import com.gdaniele_art.pinggo.exception.NotFoundException;
+import com.gdaniele_art.pinggo.security.JwtTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ public class AgentServiceImpl implements AgentService {
 
     @Autowired
     private AgentMapper agentMapper;
+
+    @Autowired
+    private JwtTokenService jwtTokenService;
 
     @Override
     @Transactional
@@ -134,5 +139,20 @@ public class AgentServiceImpl implements AgentService {
 
         return agentMapper.toResponse(agent);
     }
-    
+
+    @Override
+    public AgentTokenResponse generateAgentToken(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Agent id cannot be null");
+        }
+        Agent agent = agentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Agent not found"));
+        if (!agent.isEnabled()) {
+            throw new IllegalStateException("Agent must be enabled before generating a token");
+        }
+        String token = jwtTokenService.generateAgentToken(agent.getId());
+        Long expiresAt = jwtTokenService.extractExpirationTime(token);
+
+        return new AgentTokenResponse(agent.getId(), token, expiresAt);
+    }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -22,6 +23,12 @@ public class JwtTokenService {
     private final JwtEncoder encoder;
     private final JwtDecoder decoder;
 
+    @Value("${jwt.expiration:3600}")
+    private long userExpirationSeconds;
+
+    @Value("${jwt.agent-expiration-seconds:7776000}")
+    private long agentExpirationSeconds;
+
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
 
@@ -33,9 +40,28 @@ public class JwtTokenService {
         JwtClaimsSet claims =  JwtClaimsSet.builder()
                 .issuer("pinggo")
                 .issuedAt(now)
-                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .expiresAt(now.plus(userExpirationSeconds, ChronoUnit.SECONDS))
                 .subject(authentication.getName())
                 .claim("roles", roles)
+                .build();
+
+        return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateAgentToken(Long agentId) {
+        if (agentId == null) {
+            throw new IllegalArgumentException("Agent id cannot be null");
+        }
+
+        Instant now = Instant.now();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("pinggo")
+                .issuedAt(now)
+                .expiresAt(now.plus(agentExpirationSeconds, ChronoUnit.SECONDS))
+                .subject("agent:" + agentId)
+                .claim("roles", List.of("AGENT"))
+                .claim("agentId", agentId)
                 .build();
 
         return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

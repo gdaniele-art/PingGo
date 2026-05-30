@@ -43,3 +43,5 @@ alerts:
 
 jwt:
   secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION_SECONDS:3600}
+  agent-expiration-seconds: ${JWT_AGENT_EXPIRATION_SECONDS:7776000}
