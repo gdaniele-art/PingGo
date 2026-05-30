@@ -31,7 +31,7 @@ var servicesListCmd = &cobra.Command{
 
 		fmt.Printf("[INFO] fetching services for agentId=%d\n", cfg.AgentID)
 
-		services, err := serviceclient.FetchServices(cfg.APIUrl, cfg.AgentID)
+		services, err := serviceclient.FetchServices(cfg.APIUrl, cfg.Token)
 		if err != nil {
 			return fmt.Errorf("failed to fetch services: %w", err)
 		}

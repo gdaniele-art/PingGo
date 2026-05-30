@@ -1,4 +1,5 @@
 apiUrl: "http://localhost:8080"
 agentId: 1
+token:
 intervalSeconds: 5
 timeoutSeconds: 5

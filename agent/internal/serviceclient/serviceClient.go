@@ -15,7 +15,7 @@ func FetchServices(apiURL string, token string) ([]model.Service, error) {
 	if strings.TrimSpace(apiURL) == "" {
 		return nil, fmt.Errorf("apiURL is required")
 	}
-	if token == "" {
+	if strings.TrimSpace(token) == "" {
 		return nil, fmt.Errorf("Token is required")
 	}
 
@@ -31,6 +31,7 @@ func FetchServices(apiURL string, token string) ([]model.Service, error) {
 	}
 
 	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Accept", "application/json")
 
 	resp, err := client.Do(req)
 	if err != nil {

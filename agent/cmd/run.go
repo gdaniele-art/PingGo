@@ -30,11 +30,11 @@ var runCmd = &cobra.Command{
 		timeoutSeconds := time.Duration(cfg.TimeoutSeconds) * time.Second
 
 		if runOnce {
-			runner.RunOnce(cfg.APIUrl, cfg.AgentID, timeoutSeconds)
+			runner.RunOnce(cfg.APIUrl, cfg.AgentID, cfg.Token, timeoutSeconds)
 			return nil
 		}
 
-		runner.RunLoop(cfg.APIUrl, cfg.AgentID, intervalSeconds, timeoutSeconds)
+		runner.RunLoop(cfg.APIUrl, cfg.AgentID, cfg.Token, intervalSeconds, timeoutSeconds)
 
 		return nil
 
