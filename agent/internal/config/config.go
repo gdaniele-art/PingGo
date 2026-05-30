@@ -38,5 +38,9 @@ func ValidateConfig(cfg model.Config) error {
 		return fmt.Errorf("timeoutSeconds must be greater than 0")
 	}
 
+	if cfg.Token == "" {
+		return fmt.Errorf("token is required")
+	}
+
 	return nil
 }

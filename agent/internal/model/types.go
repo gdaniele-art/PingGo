@@ -5,6 +5,7 @@ import "time"
 type Config struct {
 	APIUrl          string `yaml:"apiUrl"`
 	AgentID         int    `yaml:"agentId"`
+	Token           string `yaml:"token"`
 	IntervalSeconds int    `yaml:"intervalSeconds"`
 	TimeoutSeconds  int    `yaml:"timeoutSeconds"`
 }

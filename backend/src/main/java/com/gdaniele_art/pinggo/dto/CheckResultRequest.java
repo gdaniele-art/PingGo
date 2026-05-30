@@ -17,7 +17,7 @@ public class CheckResultRequest {
     @NotNull
     private StatusService status;
 
-    @Positive
+    @PositiveOrZero
     private Integer httpStatusCode;
 
     @PositiveOrZero
