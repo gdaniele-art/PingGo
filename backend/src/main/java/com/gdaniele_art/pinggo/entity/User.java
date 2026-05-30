@@ -36,7 +36,8 @@ public class User {
 
     public enum Role{
         ADMIN,
-        VIEWER
+        VIEWER,
+        AGENT
     }
 
     public UUID getId(){

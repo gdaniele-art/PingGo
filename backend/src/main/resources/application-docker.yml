@@ -40,3 +40,6 @@ alerts:
   slack:
     enabled: ${ALERTS_SLACK_ENABLED:false}
     webhook-url: ${ALERTS_SLACK_WEBHOOK_URL:}
+
+jwt:
+  secret: ${JWT_SECRET}
