@@ -865,3 +865,102 @@ select:disabled {
         grid-template-columns: 1fr 1fr;
     }
 }
+.LoginPage {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 32px;
+}
+
+.login-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.login-header h1 {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+}
+
+.login-header p {
+    color: var(--text-muted);
+}
+
+.LoginForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.LoginForm > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.LoginForm button[type="submit"] {
+    padding: 10px 18px;
+    background: var(--accent);
+    color: #ffffff;
+    border: 1px solid var(--accent-dark);
+    border-radius: var(--radius-md);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+}
+
+.LoginForm button[type="submit"]:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.navbar-session {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-inverse-dim);
+    font-size: 0.82rem;
+}
+
+.role-pill {
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.navbar-session button {
+    padding: 5px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: var(--text-inverse);
+    cursor: pointer;
+}
+
+.navbar-session button:hover {
+    background: var(--bg-nav-hover);
+}
+
+.UnauthorizedPage {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 32px;
+}

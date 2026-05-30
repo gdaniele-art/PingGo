@@ -6,20 +6,46 @@ import {AgentsPage} from "./pages/AgentsPage.tsx";
 import {AgentDetailPage} from "./pages/AgentDetailPage.tsx";
 import {ServiceDetailPage} from "./pages/ServiceDetailPage.tsx";
 import { LogsPage } from "./pages/LogsPage.tsx";
+import { LoginPage } from "./pages/LoginPage.tsx";
+import { ProtectedRoute } from "./components/ProtectedRoute.tsx";
 
 export default function App() {
-  return (
-      <BrowserRouter>
-        <Navbar />
-
-        <Routes>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/services/:serviceKey" element={<ServiceDetailPage/>}/>
-          <Route path="/agents" element={<AgentsPage />} />
-          <Route path="/agents/:agentId" element={<AgentDetailPage />} />
-          <Route path="/logs" element={<LogsPage />} />
-        </Routes>
-      </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <Navbar />
+            <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/" element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "VIEWER"]}>
+                        <DashboardPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/services" element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "VIEWER"]}>
+                        <ServicesPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/services/:serviceKey" element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "VIEWER"]}>
+                        <ServiceDetailPage/>
+                    </ProtectedRoute>
+                } />
+                <Route path="/agents" element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "VIEWER"]}>
+                        <AgentsPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/agents/:agentId" element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "VIEWER"]}>
+                        <AgentDetailPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/logs" element={
+                    <ProtectedRoute allowedRoles={["ADMIN", "VIEWER"]}>
+                        <LogsPage />
+                    </ProtectedRoute>
+                } />
+            </Routes>
+        </BrowserRouter>
+    );
 }

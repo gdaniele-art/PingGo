@@ -1,5 +1,5 @@
 import type {CheckLogResponse, CheckMethod, MonitoredServiceResponse} from "../types/dashboard.ts";
-
+import { apiFetch, parseJsonResponse } from "./http.ts";
 
 export type CreateMonitoredServiceRequest = {
     serviceKey: string;
@@ -8,6 +8,7 @@ export type CreateMonitoredServiceRequest = {
     checkMethod: CheckMethod;
     agentId: number;
 };
+
 export type UpdateMonitoredServiceRequest = {
     name: string;
     url: string;
@@ -16,85 +17,50 @@ export type UpdateMonitoredServiceRequest = {
 };
 
 export async function getAllServices():Promise<MonitoredServiceResponse[]> {
-    const resp: Response  = await fetch("/api/services");
-    if (!resp.ok) {
-        throw new Error("Failed to fetch services");
-    }
-    return resp.json();
+    const resp: Response  = await apiFetch("/api/services");
+    return parseJsonResponse<MonitoredServiceResponse[]>(resp, "Failed to fetch services");
 }
+
 export async function createService(payload: CreateMonitoredServiceRequest):Promise<MonitoredServiceResponse> {
-    const resp = await fetch("/api/services", {
+    const resp = await apiFetch("/api/services", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify(payload),
     });
 
-    if (!resp.ok) {
-        throw new Error("Failed to create service");
-    }
-
-    return resp.json();
+    return parseJsonResponse<MonitoredServiceResponse>(resp, "Failed to create service");
 }
+
 export async function getServiceByServiceKey(serviceKey: string): Promise<MonitoredServiceResponse> {
-    const response = await fetch(`/api/services/key/${encodeURIComponent(serviceKey)}`);
-
-    if (!response.ok) {
-        throw new Error("Failed to fetch service");
-    }
-
-    return response.json();
+    const response = await apiFetch(`/api/services/key/${encodeURIComponent(serviceKey)}`);
+    return parseJsonResponse<MonitoredServiceResponse>(response, "Failed to fetch service");
 }
 
 export async function getServiceRecentLogs(serviceKey: string): Promise<CheckLogResponse[]> {
-    const response = await fetch(`/api/check-logs/service-key/${serviceKey}/recent`);
-
-    if (!response.ok) {
-        throw new Error("Failed to fetch service logs");
-    }
-
-    return response.json();
+    const response = await apiFetch(`/api/check-logs/service-key/${encodeURIComponent(serviceKey)}/recent`);
+    return parseJsonResponse<CheckLogResponse[]>(response, "Failed to fetch service logs");
 }
 
 export async function enableService(serviceId: number): Promise<MonitoredServiceResponse> {
-    const response = await fetch(`/api/services/${serviceId}/enable`, {
+    const response = await apiFetch(`/api/services/${serviceId}/enable`, {
         method: "PATCH",
     });
 
-    if (!response.ok) {
-        throw new Error("Failed to enable service");
-    }
-
-    return response.json();
+    return parseJsonResponse<MonitoredServiceResponse>(response, "Failed to enable service");
 }
 
 export async function disableService(serviceId: number): Promise<MonitoredServiceResponse> {
-    const response = await fetch(`/api/services/${serviceId}/disable`, {
+    const response = await apiFetch(`/api/services/${serviceId}/disable`, {
         method: "PATCH",
     });
 
-    if (!response.ok) {
-        throw new Error("Failed to disable service");
-    }
-    return response.json();
+    return parseJsonResponse<MonitoredServiceResponse>(response, "Failed to disable service");
 }
 
-export async function updateService(
-    serviceId: number,
-    payload: UpdateMonitoredServiceRequest
-): Promise<MonitoredServiceResponse> {
-    const response = await fetch(`/api/services/${serviceId}`, {
+export async function updateService(serviceId: number, payload: UpdateMonitoredServiceRequest): Promise<MonitoredServiceResponse> {
+    const response = await apiFetch(`/api/services/${serviceId}`, {
         method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-        throw new Error("Failed to update service");
-    }
-
-    return response.json();
+    return parseJsonResponse<MonitoredServiceResponse>(response, "Failed to update service");
 }
